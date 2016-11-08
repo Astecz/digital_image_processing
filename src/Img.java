@@ -24,6 +24,9 @@ public class Img {
 	public static int desvioB = 0;
 	
     //CODIGO EM COMUM PARA ALGUMAS APLICACOES
+	//COPIA UMA IMAGEM JÁ ABERTA PARA TRABALHAR SEM ALTERAR A ORIGINAL.
+	//PARÂMETRO DE ENTRADA: IMAGEM ABERTA DE ARQUIVO.
+	//Saída: imagem já copiada
     private static BufferedImage deepCopy(BufferedImage image) { //Copia a imagem de uma forma mais eficiente do que fazer um for que prejudica o tempo de execucao do programa
         ColorModel cm = image.getColorModel();
         boolean caracteristicaAlfa = cm.isAlphaPremultiplied();
@@ -34,6 +37,9 @@ public class Img {
 
 
     //CODIGO DA TRANSFORMACAO DA IMAGEM NORMAL PARA IMAGEM EM NEGATIVO
+    //FAZ O NEGATIVO DE UMA IMAGEM ABERTA
+    //PARAMETRO DE ENTRADA: IMAGEM ABERTA (JÁ COPIADA)
+    //Saída: imagem já em negativo (ImageIcon)
     public static ImageIcon negativo(String namein) throws Exception{  // EFEITO NEGATIVO
     	
     	BufferedImage image;
@@ -55,7 +61,11 @@ public class Img {
         return new ImageIcon( image );  
     }  
     
-    //CODIGO DA APLICACAO DO FILTRO DA MEDIA
+    //CODIGO DA APLICACAO DO FILTRO DA MEDIA EM CADA PIXEL
+    //PARAMETROS DE ENTRADA: image - Imagem aberta ja copiada
+    //						 "i" e "j" - posicao do pixel que estamos calculando a media
+    //							"n"		- tamanho da matriz quadrada da mascara
+    // SAÍDA: Cor média do pixel i, j
     private static Color valPixel(BufferedImage image, int i, int j, int n){
         int pixel = image.getRGB(i, j);
         Color cor = new Color(pixel, true);
@@ -91,7 +101,10 @@ public class Img {
     }
 
     
-    //
+    //CÓDIGO DA CONVERSÃO RGB PARA YIQ
+    //PARAMETROS DE ENTRADA: image - imagem aberta já copiada
+    // 						 nameout - nome do arquivo .iyq de saída da imagem convertida
+    //Saída: já escreve no arquivo do caminho "nameout"
     public static void RGBtoYIQ (BufferedImage image, String nameout) throws Exception{
 		
 		File file = new File(nameout);
@@ -132,6 +145,9 @@ public class Img {
 		bw.close();
     }
 
+    //CÓDIGO DA CONVERSÃO YIQ PARA RGB
+    //PARAMETROS DE ENTRADA: namein - caminho do arquivo .yiq
+    //SAÍDA: imagem já recuperada, (imageIcon)
 
     public static ImageIcon YIQtoRGB(String namein) throws Exception{
 	    BufferedImage result = null;
@@ -239,7 +255,10 @@ public class Img {
 }
 
       
-      //
+      //APLICA O FILTRO DA MÉDIA USANDO O VALOR MÉDIO DO PIXEL (FUNÇÃO valPixel)
+     //PARÂMETROS DE ENTRADA: namein - caminho do arquivo de imagem de entrada
+    //						  n - tamanho da matriz da máscara para passar para valPixel
+    // Saída: imagem já com o filtro da média aplicado
     public static ImageIcon filtroMedia(String namein, int n) throws Exception{
         BufferedImage image, output;
 
@@ -265,7 +284,11 @@ public class Img {
 
 
 
-    //CODIGO DA APLICACAO DE FILTRO DE MEDIANA
+    //CODIGO DA APLICACAO DE FILTRO DE MEDIANA, FAZ A MEDIANA DE CADA PIXEL
+    //ENTRADA: image - imagem já carregada e copiada
+    //			i e j - valora da posição do pixel que estamos calculando a mediana
+    //			n - tamanho da matriz de vizinhança
+    //SAÍDA: Cor mediana do pixel i, j
     private static Color valPixelMediana(BufferedImage image, int i, int j, int n){
         int pixel = image.getRGB(i, j);
         Color cor = new Color(pixel, true);
@@ -313,6 +336,11 @@ public class Img {
         return cor;
     }
 
+    
+    //CODIGO DA APLICACAO DE FILTRO DE MEDIANA, USANDO A MEDIANA DE CADA PIXEL
+    //ENTRADA: namein - caminho do arquivo da imagem a ser usada
+    //			n - tamanho da matriz de vizinhança
+    //SAÍDA: Imagem com o filtro da mediana aplicado (ImageIcon)
       
     public static ImageIcon filtroMediana(String namein, int n) throws Exception{  
         BufferedImage image, output;
@@ -336,6 +364,11 @@ public class Img {
     
     //as maravilhas de lucas
     
+    //REALIZA CONVOLUÇÃO COM MATRIZ NA IMAGEM
+    //PARAMETROS DE ENTRADA: namein - caminho para o arquivo da imagem a ser usada
+    //						select - seleciona se o filtro é de aguçamento
+    //TESTAR PARA PARAMETRIZAR OS VALORES PEDIDOS PELA FUNÇAO, PARA SEPARAR AGUÇAMENTO DE CONVOLUÇAO
+    //SAÍDA: IMAGEM CONVOLUCIONADA ou AGUÇADA
     public static ImageIcon conv(String namein, int select, int selectOffset, int offset) throws Exception{  
     	
     	String nameout = "catlokao.jpg";
@@ -367,7 +400,7 @@ public class Img {
 			buffer[cont] = auxiliar.get(cont);
 		sharpen=buffer;
 		
-		if(select == 1){ //filtro de aguçamento
+		if(select == 1){ //filtro de aguçamento!!!!!!
 			int c,d;
 			c = Integer.parseInt(JOptionPane.showInputDialog("Digite a constante C:"));
 			d = Integer.parseInt(JOptionPane.showInputDialog("Digite a constante D:"));
@@ -418,6 +451,9 @@ public class Img {
     }  
 
     
+    //APLICA O GRADIENTE DE SOBEL
+    //ENTRADA: CAMINHO PARA A IMAGEM A SER USADA
+    //SAÍDA: IMAGEM COM FILTRO APLICADO EM MEMÓRIA (ImageIcon)
     public static ImageIcon sobel(String namein) throws Exception{  
     
     	BufferedImage image,copy1,copy2,output;
@@ -468,7 +504,11 @@ public class Img {
     	return new ImageIcon(output);
 	}  
 
-    
+    //SELECIONA O VALOR MEDIO DO PIXEL PARA APLICAR O CONTRASTE ADAPTATIVO
+    //ENTRADA: image - Imagem carregada em memória
+    //			i e j - posição do pixel que está se tirando a média
+    //				n - tamanho da matriz para média
+    //Saída: contraste médio do pixel
     private static Color valPixelContraste(BufferedImage image, int i, int j, int n){
     	int pixel = image.getRGB(i, j);
     	Color cor = new Color(pixel, true);
@@ -525,7 +565,11 @@ public class Img {
 
     	return cor;
     }
-
+    
+    //FAZ O CONTRASTE ADAPTATIVO USANDO A FUNÇÃO ANTERIOR
+    //ENTRADA: caminho para a imagem a ser usada
+    //SAÍDA: IMAGEM EM MEMÓRIA COM O CONTRASTE APLICADO
+    //PARAMETRIZAR OS VALORES PEDIDOS!!!
     public static ImageIcon constrateAdaptivo(String namein) throws Exception{  
             
             String nameout = "catboladao.jpg";
@@ -600,7 +644,9 @@ public class Img {
     
     //expan e equa
     
-    
+   //EXPANSAO DE HISTOGRAMA
+    //DEVOLVE UMA IMAGEM EM MEMORIA COM O HISTOGRAMA EXPANDIDO
+    //TEM COMO ENTRADA O CAMINHO PARA A IMAGEM A SER USADA
    public static ImageIcon expan(String namein)throws Exception{
     	
     	String nameout = "expan.jpg";
@@ -679,6 +725,10 @@ public class Img {
     		
     }
    
+   
+   //EQUALIZAÇAO DE HISTOGRAMA
+   //DEVOLVE UMA IMAGEM EM MEMORIA COM O HISTOGRAMA EQUALIZADO
+   //TEM COMO ENTRADA O CAMINHO PARA A IMAGEM A SER USADA
    	public static ImageIcon equa(String namein)throws Exception{
    	
    		
