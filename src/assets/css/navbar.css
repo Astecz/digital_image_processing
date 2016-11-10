@@ -1,0 +1,13 @@
+.navbarIndex{
+	-fx-background-color: #202020;
+}
+
+.navbarIndex .label{
+	-fx-text-fill: white;
+  -fx-padding: 10;
+  -fx-font: 13px "Serif";
+  -fx-padding: 5 45 3 ;
+  -fx-border-width: 5px;
+  -fx-effect: dropshadow(three-pass-box, white, 0.8, 0, 0, 0);
+}
+

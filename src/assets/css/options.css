@@ -1,0 +1,24 @@
+/**
+* color reference pallete: http://www.color-hex.com/color-palette/25959;
+*
+*/
+
+.index{
+	-fx-background-color: #383434;
+}
+
+.options{
+	-fx-background-color: #888888;
+}
+
+.items{
+	-fx-background-color: #383434 ;
+	-fx-text-fill: #ffffff;
+	-fx-padding: 4px;
+}
+
+.items .button{
+	-fx-background-radius: 40 50;
+	-fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 8 0;
+	-fx-padding: 5 5 5 5;
+}
