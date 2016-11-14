@@ -5,30 +5,21 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="851.0" prefWidth="837.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="774.0" prefWidth="1095.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <MenuBar id="navbarIndex" prefHeight="25.0" prefWidth="837.0" styleClass="navbarIndex" stylesheets="@../css/navbar.css">
+      <MenuBar id="navbarIndex" prefHeight="31.0" prefWidth="1095.0" styleClass="navbarIndex" stylesheets="@../css/navbar.css">
         <menus>
           <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Abrir" />
+                  <MenuItem mnemonicParsing="false" text="Salvar" />
+               </items>
           </Menu>
         </menus>
       </MenuBar>
-      <Pane layoutY="31.0" prefHeight="620.0" prefWidth="838.0" styleClass="index" stylesheets="@../css/options.css">
+      <Pane layoutY="31.0" prefHeight="744.0" prefWidth="1095.0" styleClass="index" stylesheets="@../css/options.css">
          <children>
-            <Pane layoutX="2.0" layoutY="2.0" prefHeight="600.0" prefWidth="229.0" styleClass="options">
+            <Pane layoutX="2.0" layoutY="2.0" prefHeight="433.0" prefWidth="229.0" styleClass="options">
                <children>
                   <Pane layoutX="2.0" layoutY="2.0" prefHeight="33.0" prefWidth="224.0" styleClass="index">
                      <children>
@@ -139,9 +130,18 @@
                         </Pane>
                      </children>
                   </Pane>
-                  <Pane layoutX="2.0" layoutY="432.0" prefHeight="159.0" prefWidth="224.0" styleClass="index">
+               </children>
+            </Pane>
+            <Pane layoutX="862.0" layoutY="4.0" prefHeight="334.0" prefWidth="229.0" styleClass="options">
+               <children>
+                  <Pane layoutX="2.0" layoutY="2.0" prefHeight="33.0" prefWidth="224.0" styleClass="index">
                      <children>
-                        <Label layoutX="81.0" layoutY="8.0" text="Sistema de cor" textFill="WHITE" />
+                        <Label layoutX="71.0" layoutY="8.0" text="Paleta de funções" textFill="WHITE" />
+                     </children>
+                  </Pane>
+                  <Pane layoutX="2.0" layoutY="36.0" prefHeight="159.0" prefWidth="224.0" styleClass="index">
+                     <children>
+                        <Label layoutX="78.0" layoutY="8.0" text="Sistema de cor" textFill="WHITE" />
                         <Pane layoutX="2.0" layoutY="28.0" prefHeight="127.0" prefWidth="216.0" styleClass="options">
                            <children>
                               <Pane layoutX="2.0" layoutY="59.0" prefHeight="67.0" prefWidth="212.0" styleClass="items">
@@ -168,6 +168,39 @@
                         <Pane layoutX="4.0" layoutY="29.0" prefHeight="57.0" prefWidth="212.0" styleClass="items">
                            <children>
                               <Label layoutX="6.0" layoutY="12.0" text="Bandas" textFill="WHITE">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Label>
+                              <Slider layoutX="70.0" layoutY="13.0" max="255.0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
+                           </children>
+                        </Pane>
+                     </children>
+                  </Pane>
+                  <Pane layoutX="2.0" layoutY="196.0" prefHeight="134.0" prefWidth="224.0" styleClass="index">
+                     <children>
+                        <Label layoutX="96.0" layoutY="8.0" text="Brilho" textFill="WHITE" />
+                        <Pane layoutX="2.0" layoutY="28.0" prefHeight="101.0" prefWidth="216.0" styleClass="options">
+                           <children>
+                              <Pane layoutX="2.0" layoutY="59.0" prefHeight="40.0" prefWidth="212.0" styleClass="items">
+                                 <children>
+                                    <Button layoutX="17.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Multiplicativo">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </Button>
+                                    <Button layoutX="111.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Aditivo">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="4.0" layoutY="29.0" prefHeight="57.0" prefWidth="212.0" styleClass="items">
+                           <children>
+                              <Label layoutX="24.0" layoutY="13.0" text="C" textFill="WHITE">
                                  <font>
                                     <Font size="10.0" />
                                  </font>

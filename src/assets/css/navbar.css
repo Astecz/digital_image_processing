@@ -11,3 +11,8 @@
   -fx-effect: dropshadow(three-pass-box, white, 0.8, 0, 0, 0);
 }
 
+.context-menu {
+    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-background-color: black;
+}
+
