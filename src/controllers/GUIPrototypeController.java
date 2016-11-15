@@ -109,7 +109,7 @@ public class GUIPrototypeController {
 	private void initialize(){
 		mascaraSlider.valueProperty().addListener((observable, oldValue, newValue)->{
 			try {
-				this.mascaraValue = Math.round(newValue.floatValue();
+				this.mascaraValue = Math.round(newValue.floatValue());
 				this.output = filterController(mask, this.mascaraValue);
 				System.out.println(Math.round(newValue.floatValue()));
 				editing(output);
