@@ -20,7 +20,7 @@
       </MenuBar>
       <Pane layoutY="31.0" prefHeight="504.0" prefWidth="1095.0" styleClass="index" stylesheets="@../css/options.css">
          <children>
-            <Pane layoutX="2.0" layoutY="2.0" prefHeight="408.0" prefWidth="229.0" styleClass="options">
+            <Pane layoutX="2.0" layoutY="2.0" prefHeight="462.0" prefWidth="229.0" styleClass="options">
                <children>
                   <Pane layoutX="2.0" layoutY="2.0" prefHeight="33.0" prefWidth="224.0" styleClass="index">
                      <children>
@@ -34,17 +34,17 @@
                            <children>
                               <Pane layoutX="2.0" layoutY="59.0" prefHeight="67.0" prefWidth="216.0" styleClass="items">
                                  <children>
-                                    <Button id="mediaButton" fx:id="mediaButton" layoutX="20.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Média">
+                                    <Button id="mediaButton" fx:id="mediaButton" layoutX="20.0" layoutY="7.0" mnemonicParsing="false" onAction="#mediaClicked" prefHeight="25.0" prefWidth="85.0" text="Média">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </Button>
-                                    <Button id="medianaButton" fx:id="medianaButton" layoutX="119.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Mediana">
+                                    <Button id="medianaButton" fx:id="medianaButton" layoutX="119.0" layoutY="7.0" mnemonicParsing="false" onAction="#medianaClicked" prefHeight="25.0" prefWidth="84.0" text="Mediana">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </Button>
-                                    <Button id="convolucaoButton" fx:id="convolucaoButton" layoutX="23.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="178.0" text="Convolução">
+                                    <Button id="convolucaoButton" fx:id="convolucaoButton" layoutX="23.0" layoutY="38.0" mnemonicParsing="false" onAction="#convolucaoClicked" prefHeight="25.0" prefWidth="178.0" text="Convolução">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -72,12 +72,12 @@
                            <children>
                               <Pane layoutX="2.0" layoutY="1.0" prefHeight="38.0" prefWidth="216.0" styleClass="items">
                                  <children>
-                                    <Button id="expansaoButton" fx:id="expansaoButton" layoutX="27.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Expansão">
+                                    <Button id="expansaoButton" fx:id="expansaoButton" layoutX="27.0" layoutY="7.0" mnemonicParsing="false" onAction="#expansaoClicked" prefHeight="25.0" prefWidth="85.0" text="Expansão">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </Button>
-                                    <Button id="equalizacaoButton" fx:id="equalizacaoButton" layoutX="122.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Equalização">
+                                    <Button id="equalizacaoButton" fx:id="equalizacaoButton" layoutX="122.0" layoutY="7.0" mnemonicParsing="false" onAction="#equalizacaoClicked" prefHeight="25.0" prefWidth="84.0" text="Equalização">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -88,19 +88,15 @@
                         </Pane>
                      </children>
                   </Pane>
-                  <Pane layoutX="2.0" layoutY="272.0" prefHeight="134.0" prefWidth="224.0" styleClass="index">
+                  <Pane layoutX="2.0" layoutY="272.0" prefHeight="187.0" prefWidth="224.0" styleClass="index">
                      <children>
                         <Label layoutX="100.0" layoutY="8.0" text="Outros" textFill="WHITE" />
-                        <Pane layoutX="2.0" layoutY="28.0" prefHeight="101.0" prefWidth="216.0" styleClass="options">
+                        <Pane layoutX="2.0" layoutY="28.0" prefHeight="153.0" prefWidth="216.0" styleClass="options">
                            <children>
-                              <Pane layoutX="2.0" layoutY="59.0" prefHeight="40.0" prefWidth="212.0" styleClass="items">
+                              <Pane layoutX="2.0" layoutY="59.0" prefHeight="51.0" prefWidth="212.0" styleClass="items" />
+                              <Pane layoutX="2.0" layoutY="112.0" prefHeight="40.0" prefWidth="212.0" styleClass="items">
                                  <children>
-                                    <Button id="contrasteButton" fx:id="contrasteButton" layoutX="13.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Contraste">
-                                       <font>
-                                          <Font size="10.0" />
-                                       </font>
-                                    </Button>
-                                    <Button id="sobelButton" fx:id="sobelButton" layoutX="116.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Sobel">
+                                    <Button id="sobelButton" fx:id="sobelButton" layoutX="8.0" layoutY="8.0" mnemonicParsing="false" onAction="#sobelClicked" prefHeight="25.0" prefWidth="197.0" text="Sobel">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -111,12 +107,18 @@
                         </Pane>
                         <Pane layoutX="4.0" layoutY="29.0" prefHeight="57.0" prefWidth="212.0" styleClass="items">
                            <children>
-                              <Label layoutX="6.0" layoutY="12.0" text="Limiarizaçao" textFill="WHITE">
+                              <Label layoutX="4.0" layoutY="13.0" text="Limiarizaçao" textFill="WHITE">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
                               <Slider id="limizarizacaoSlider" fx:id="limiarizacaoSlider" layoutX="70.0" layoutY="13.0" max="255.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
+                              <Slider id="limizarizacaoSlider" fx:id="contrasteSlider" layoutX="71.0" layoutY="64.0" max="255.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
+                              <Label layoutX="4.0" layoutY="67.0" text="Contraste" textFill="WHITE">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </Pane>
                      </children>
@@ -137,17 +139,17 @@
                            <children>
                               <Pane layoutX="2.0" layoutY="59.0" prefHeight="67.0" prefWidth="212.0" styleClass="items">
                                  <children>
-                                    <Button id="rgbyiqButton" fx:id="rbgyiqButton" layoutX="17.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="RGB -&gt; YIQ">
+                                    <Button id="rgbyiqButton" fx:id="rbgyiqButton" layoutX="17.0" layoutY="7.0" mnemonicParsing="false" onAction="#rgbClicked" prefHeight="25.0" prefWidth="85.0" text="RGB -&gt; YIQ">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </Button>
-                                    <Button id="yiqrgbButton" fx:id="yiqrgbButton" layoutX="111.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="YIQ -&gt; RGB">
+                                    <Button id="yiqrgbButton" fx:id="yiqrgbButton" layoutX="111.0" layoutY="7.0" mnemonicParsing="false" onAction="#yiqClicked" prefHeight="25.0" prefWidth="84.0" text="YIQ -&gt; RGB">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </Button>
-                                    <Button id="begativoButton" fx:id="negativoButton" layoutX="18.0" layoutY="36.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="178.0" text="Negativo">
+                                    <Button id="begativoButton" fx:id="negativoButton" layoutX="18.0" layoutY="36.0" mnemonicParsing="false" onAction="#negativoClicked" prefHeight="25.0" prefWidth="178.0" text="Negativo">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -175,12 +177,12 @@
                            <children>
                               <Pane layoutX="2.0" layoutY="59.0" prefHeight="40.0" prefWidth="212.0" styleClass="items">
                                  <children>
-                                    <Button id="multiplicativoButton" fx:id="multiplicativoButton" layoutX="17.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Multiplicativo">
+                                    <Button id="multiplicativoButton" fx:id="multiplicativoButton" layoutX="17.0" layoutY="7.0" mnemonicParsing="false" onAction="#multiplicativoClicked" prefHeight="25.0" prefWidth="85.0" text="Multiplicativo">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </Button>
-                                    <Button id="aditivoButton" fx:id="aditivoButton" layoutX="111.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Aditivo">
+                                    <Button id="aditivoButton" fx:id="aditivoButton" layoutX="111.0" layoutY="7.0" mnemonicParsing="false" onAction="#aditivoClicked" prefHeight="25.0" prefWidth="84.0" text="Aditivo">
                                        <font>
                                           <Font size="10.0" />
                                        </font>

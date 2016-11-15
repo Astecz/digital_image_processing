@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 
+import java.awt.image.BufferedImage;
+
 
 /**
  *
@@ -18,13 +20,9 @@ import javafx.stage.Stage;
  * @author claudio
  */
 public class Main  extends Application{
-	/*
-	private static BufferedImage image;
-    
-    public static BufferedImage filterController(Filter filter, int matrix_width) throws CloneNotSupportedException {
-        return filter.apply(image, matrix_width);
-    }
-    
+
+
+    /*
     public static void main(String[] args) {
         try {
             Average avg = new Average();
