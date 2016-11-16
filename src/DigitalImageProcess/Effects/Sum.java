@@ -5,6 +5,7 @@
  */
 package DigitalImageProcess.Effects;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /**
@@ -14,8 +15,21 @@ import java.awt.image.BufferedImage;
 public class Sum extends DigitalImageProcess.DigitalProcess {
 
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected int transform(BufferedImage imgA, int px, int py, BufferedImage imgB) {
+    	
+    	Color colorA = new Color(imgA.getRGB(px, py));
+    	Color colorB = new Color(imgB.getRGB(px, py));
+    	
+    	int R = colorA.getRed() + colorB.getRed();
+    	int G = colorA.getGreen() + colorB.getGreen();
+    	int B = colorA.getBlue() + colorB.getBlue();
+    	
+    	R = R <= 255? R : 255;
+    	G = G <= 255? G : 255;
+    	B = B <= 255? B : 255;
+    	
+    	return new Color(R,G,B).getRGB();
+    	
     }
     
 }

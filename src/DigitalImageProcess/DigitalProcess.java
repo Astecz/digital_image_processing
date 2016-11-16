@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
  *
  * @author Jorismar
  */
+
 public abstract class DigitalProcess {
     public BufferedImage apply(BufferedImage img, int width) throws CloneNotSupportedException {
         BufferedImage output = Image.clone(img);
@@ -24,4 +25,5 @@ public abstract class DigitalProcess {
     }
     
     protected abstract int transform(BufferedImage img, int px, int py, int width);
+    
 }

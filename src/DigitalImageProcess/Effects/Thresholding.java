@@ -5,6 +5,7 @@
  */
 package DigitalImageProcess.Effects;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /**
@@ -14,8 +15,21 @@ import java.awt.image.BufferedImage;
 public class Thresholding extends DigitalImageProcess.DigitalProcess {
 
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected int transform(BufferedImage img, int px, int py, int T) {
+        
+    	Color color = new Color(img.getRGB(px, py));
+    	
+    	int R = color.getRed();
+    	int G = color.getGreen();
+    	int B = color.getBlue();
+    	
+    	//check and set threshold T in 3 channels
+    	R = R > T ? T : R;
+    	G = G > T ? T : G;
+    	B = B > T ? T : B;
+    	
+    	return new Color(R,G,B).getRGB();
+    	
     }
     
 }

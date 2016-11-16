@@ -44,12 +44,13 @@ public class Main  extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
 		Parent root = FXMLLoader.load(getClass().getResource("assets/views/GUIPrototype.fxml"));
 
 		Scene scene = new Scene(root, 1095, 529);
 
 		primaryStage.setTitle("Image editor");
-		primaryStage.setScene(scene);
+		primaryStage.setScene(scene);	
 		primaryStage.show();
 
 
