@@ -5,10 +5,17 @@
  */
 package DigitalImageProcess.Effects;
 
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author Jorismar
  */
-public class Thresholding {
+public class Thresholding extends DigitalImageProcess.DigitalProcess {
+
+    @Override
+    protected int transform(BufferedImage img, int px, int py, int width) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

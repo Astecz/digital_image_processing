@@ -5,7 +5,6 @@
  */
 package DigitalImageProcess.Luminosity;
 
-import DigitalImageProcess.Tools.Image;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 

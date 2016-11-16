@@ -5,10 +5,17 @@
  */
 package DigitalImageProcess.Luminosity;
 
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author Jorismar
  */
-public class Brightness {
+public class Brightness extends DigitalImageProcess.DigitalProcess {
+
+    @Override
+    protected int transform(BufferedImage img, int px, int py, int width) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
