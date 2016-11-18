@@ -5,7 +5,9 @@
  */
 package DigitalImageProcess.Effects;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.nio.channels.Channel;
 
 /**
  *
@@ -13,9 +15,25 @@ import java.awt.image.BufferedImage;
  */
 public class Bands extends DigitalImageProcess.DigitalProcess {
 
-    @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+	@Override
+	protected int transform(BufferedImage img, int px, int py, Color channel) {
+
+		Color color = new Color(img.getRGB(px, py));
+
+		if (channel.equals(Color.red))
+
+			color = new Color(color.getRed(), color.getRed(), color.getRed());
+
+		else if (channel.equals(Color.green))
+
+			color = new Color(color.getGreen(), color.getGreen(), color.getGreen());
+
+		else
+			
+			color = new Color(color.getBlue(), color.getBlue(), color.getBlue());
+		
+		return color.getRGB();
+
+	}
+
 }
