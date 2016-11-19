@@ -16,6 +16,7 @@ public class Sum extends DigitalImageProcess.DigitalProcess {
 
     @Override
     protected int transform(BufferedImage imgA, int px, int py, Object arg) {
+    	
     	BufferedImage imgB = (BufferedImage) arg;
         
     	Color colorA = new Color(imgA.getRGB(px, py));
