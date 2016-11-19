@@ -1,6 +1,6 @@
 package controllers;
 
-import Filters.*;
+import DigitalImageProcess.Filters.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;

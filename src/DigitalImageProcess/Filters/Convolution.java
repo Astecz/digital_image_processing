@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -22,11 +23,11 @@ import javax.swing.JOptionPane;
 public class Convolution extends DigitalImageProcess.DigitalProcess {
 
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public void test(String namein, int select, int selectOffset, int offset) {
+    public void test(String namein, int select, int selectOffset, int offset) throws IOException {
     	
     	String nameout = "catlokao.jpg";
         ArrayList<Float> auxiliar = new ArrayList<Float>();
@@ -106,7 +107,7 @@ public class Convolution extends DigitalImageProcess.DigitalProcess {
 
         ImageIO.write(dstImage, "jpg", new File(nameout)); //CRIO A IMAGEM NA PASTA COM O NOME DADO EM nameout E DO TIPO JPG
 
-    	return new ImageIcon(dstImage);  
+//    	return new ImageIcon(dstImage);  
     }
     
 }
