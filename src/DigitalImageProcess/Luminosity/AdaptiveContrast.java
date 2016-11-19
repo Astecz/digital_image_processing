@@ -35,8 +35,10 @@ public class AdaptiveContrast extends DigitalImageProcess.DigitalProcess {
     }
     
     @Override
-    protected int transform(BufferedImage img, int px, int py, int num_masks) {
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
         int r = 0, g = 0, b = 0;
+        Integer num_masks = (Integer) arg;
+        
         long len = num_masks * num_masks;
         
         int x_start = px - (Math.round((float) (num_masks / 2)));

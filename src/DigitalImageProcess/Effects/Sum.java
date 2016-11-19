@@ -15,8 +15,9 @@ import java.awt.image.BufferedImage;
 public class Sum extends DigitalImageProcess.DigitalProcess {
 
     @Override
-    protected int transform(BufferedImage imgA, int px, int py, BufferedImage imgB) {
-    	
+    protected int transform(BufferedImage imgA, int px, int py, Object arg) {
+    	BufferedImage imgB = (BufferedImage) arg;
+        
     	Color colorA = new Color(imgA.getRGB(px, py));
     	Color colorB = new Color(imgB.getRGB(px, py));
     	

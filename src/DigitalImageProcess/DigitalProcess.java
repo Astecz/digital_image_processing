@@ -14,16 +14,15 @@ import java.awt.image.BufferedImage;
  */
 
 public abstract class DigitalProcess {
-    public BufferedImage apply(BufferedImage img, int width) throws CloneNotSupportedException {
+    public BufferedImage apply(BufferedImage img, Object arg) {
         BufferedImage output = Image.clone(img);
         
         for(int x = 0; x < img.getWidth(); x++)
             for(int y = 0; y < img.getHeight(); y++)
-                output.setRGB(x, y, this.transform(img, x, y, width));
+                output.setRGB(x, y, this.transform(img, x, y, arg));
         
         return output;
     }
     
-    protected abstract int transform(BufferedImage img, int px, int py, int width);
-    
+    protected abstract int transform(BufferedImage img, int px, int py, Object arg);
 }

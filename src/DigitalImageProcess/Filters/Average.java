@@ -14,13 +14,14 @@ import java.awt.image.BufferedImage;
  */
 public class Average extends DigitalImageProcess.DigitalProcess {
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
+    protected int transform(BufferedImage img, int px, int py, Object matrix_len) {
         int r = 0, g = 0, b = 0;
+        Integer matrix_width = (Integer) matrix_len;
        
-        long len = width * width;
+        long len = matrix_width * matrix_width;
         
-        for (int x = px - (Math.round((float)(width / 2))); x < (px + (width / 2)); x++)
-            for (int y = py - (Math.round((float)(width / 2))); y < (py + (width / 2)); y++) {
+        for (int x = px - (Math.round((float)(matrix_width / 2))); x < (px + (matrix_width / 2)); x++)
+            for (int y = py - (Math.round((float)(matrix_width / 2))); y < (py + (matrix_width / 2)); y++) {
                 if (x >= 0 && x < img.getWidth() && y >= 0 && y < img.getHeight()) {
                     Color color = new Color(img.getRGB(x, y), true);
                     

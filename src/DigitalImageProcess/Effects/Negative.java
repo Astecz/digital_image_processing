@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
 public class Negative extends DigitalImageProcess.DigitalProcess {
 
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
         Color color = new Color(img.getRGB(px, py));
         return new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue()).getRGB();
     }

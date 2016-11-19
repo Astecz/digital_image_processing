@@ -15,8 +15,9 @@ import java.util.Arrays;
  */
 public class Median extends DigitalImageProcess.DigitalProcess {
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
-        int matsize = width * width;
+    protected int transform(BufferedImage img, int px, int py, Object matx_width) {
+        Integer matrix_width = (Integer) matx_width;
+        int matsize = matrix_width * matrix_width;
         
         int[] r = new int[matsize];
         int[] g = new int[matsize];
@@ -26,8 +27,8 @@ public class Median extends DigitalImageProcess.DigitalProcess {
         Arrays.fill(g, 0);
         Arrays.fill(b, 0);
         
-        for (int x = px - Math.round((float) width/2), count = 0; x < px + (width/2); x++)
-            for (int y = py - Math.round((float) width/2); y < py + (width/2); y++) {
+        for (int x = px - Math.round((float) matrix_width/2), count = 0; x < px + (matrix_width/2); x++)
+            for (int y = py - Math.round((float) matrix_width/2); y < py + (matrix_width/2); y++) {
                 if (x >= 0 && x < img.getWidth() && y >= 0 && y < img.getHeight()) {
                     Color color = new Color(img.getRGB(x, y), true);
                     

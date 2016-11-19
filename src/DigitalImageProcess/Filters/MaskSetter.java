@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
  */
 public class MaskSetter extends DigitalImageProcess.DigitalProcess {
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
         return 0;
     }
 }

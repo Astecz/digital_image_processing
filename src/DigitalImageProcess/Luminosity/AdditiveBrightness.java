@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DigitalImageProcess.Effects;
+package DigitalImageProcess.Luminosity;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -12,23 +12,22 @@ import java.awt.image.BufferedImage;
  *
  * @author Jorismar
  */
-public class Thresholding extends DigitalImageProcess.DigitalProcess {
+public class AdditiveBrightness extends DigitalImageProcess.DigitalProcess {
 
     @Override
     protected int transform(BufferedImage img, int px, int py, Object arg) {
-        Integer T = (Integer) arg;
+        Integer C = (Integer) arg;
 
         Color color = new Color(img.getRGB(px, py));
 
-        int R = color.getRed();
-        int G = color.getGreen();
-        int B = color.getBlue();
+        int R = color.getRed() + C;
+        int G = color.getGreen() + C;
+        int B = color.getBlue() + C;
 
-        //check and set threshold T in 3 channels
-        R = R > T ? T : R;
-        G = G > T ? T : G;
-        B = B > T ? T : B;
+        R = R <= 255 ? R : 255; // Pra que isso??
+        G = G <= 255 ? G : 255; // Pra que isso??
+        B = B <= 255 ? B : 255; // Pra que isso??
 
-        return new Color(R,G,B).getRGB();
+        return color.getRGB();
     }
 }

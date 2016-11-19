@@ -21,15 +21,15 @@ public class SobelGradient extends DigitalImageProcess.DigitalProcess {
     private final float [] sobelv = new float [] {1, 2, 1, 0, 0, 0, -1, -2, -1};
     
     @Override
-    public BufferedImage apply(BufferedImage img, int width) throws CloneNotSupportedException {
+    public BufferedImage apply(BufferedImage img, Object arg) {
         this.copy1 = new ConvolveOp(new Kernel(3, 3, sobelh)).filter(img, null);
         this.copy2 = new ConvolveOp(new Kernel(3, 3, sobelv)).filter(img, null);
         
-        return super.apply(img, 0);
+        return super.apply(img, arg);
     }
 
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
         Color color1 = new Color(this.copy1.getRGB(px, py), true);
         Color color2 = new Color(this.copy2.getRGB(px, py), true);
 

@@ -21,7 +21,7 @@ public class HistogramEqualization extends DigitalImageProcess.DigitalProcess {
     }
 
     @Override
-    public BufferedImage apply(BufferedImage img, int width) throws CloneNotSupportedException {
+    public BufferedImage apply(BufferedImage img, Object arg) {
         // Start color count
         for(int i = 0; i < 256; i++) {
             this.RGB[0][i][0] = 0;  // Red
@@ -58,11 +58,11 @@ public class HistogramEqualization extends DigitalImageProcess.DigitalProcess {
             this.RGB[2][i][1] = Math.round(c * b_count);  // Blue
         }
 
-        return super.apply(img, width);
+        return super.apply(img, arg);
     }
     
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
         Color c = new Color(img.getRGB(px, py));
         return new Color(RGB[0][c.getRed()][1], RGB[1][c.getGreen()][1], RGB[2][c.getBlue()][1]).getRGB();
     }

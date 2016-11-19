@@ -23,7 +23,7 @@ public class HistogramExpansion extends DigitalImageProcess.DigitalProcess {
     }
 
     @Override
-    public BufferedImage apply(BufferedImage img, int width) throws CloneNotSupportedException {
+    public BufferedImage apply(BufferedImage img, Object arg) {
         this.r_min = 255;
         this.g_min = 255;
         this.b_min = 255;
@@ -55,11 +55,11 @@ public class HistogramExpansion extends DigitalImageProcess.DigitalProcess {
             this.RGB[2][i] = Math.round((((float)(i - this.b_min)) / (this.b_max - this.b_min)) * 255);
         }
         
-        return super.apply(img, width);
+        return super.apply(img, arg);
     }
     
     @Override
-    protected int transform(BufferedImage img, int px, int py, int width) {
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
         Color c = new Color(img.getRGB(px, py));
         return new Color(RGB[0][c.getRed()], RGB[1][c.getGreen()], RGB[2][c.getBlue()]).getRGB();
     }
