@@ -1,11 +1,13 @@
 package controllers;
 
 
+
 import DigitalImageProcess.DigitalProcess;
 import DigitalImageProcess.Effects.Bands;
 import DigitalImageProcess.Effects.Negative;
 import DigitalImageProcess.Effects.Thresholding;
 import DigitalImageProcess.Luminosity.*;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -189,7 +191,7 @@ public class GUIPrototypeController {
 		this.rSlider.valueProperty().addListener((observable, oldValue, newValue)->{
 			this.rLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
             try {
-                this.output = processController(bands, Math.round(newValue.floatValue()));
+                this.output = processController(bands, newValue.floatValue());
                 editing(output, this.imageName);
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();

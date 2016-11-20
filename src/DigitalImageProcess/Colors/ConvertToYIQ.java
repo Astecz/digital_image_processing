@@ -15,18 +15,36 @@ import java.awt.image.BufferedImage;
 public abstract class ConvertToYIQ extends DigitalImageProcess.DigitalProcess {
 
 
-    protected int transform(BufferedImage img, int px, int py, int width) {
-        Color color = new Color(img.getRGB(px, py));
+
+    @Override
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
+        
+    	Color color = new Color(img.getRGB(px, py));
+
         
         int r = color.getRed();
         int g = color.getGreen();
         int b = color.getBlue();
 
-        float y = ((0.299f * r) + (0.587f * g) + (0.114f * b)) / 256;
-        float i = ((0.596f * r) - (0.274f * g) - (0.322f * b)) / 256;
-        float q = ((0.212f * r) - (0.523f * g) + (0.311f * b)) / 256;
+        float y = ((0.299f * r) + (0.587f * g) + (0.114f * b));
+        float i = ((0.596f * r) - (0.274f * g) - (0.322f * b));
+        float q = ((0.212f * r) - (0.523f * g) + (0.311f * b));       
         
-        return 0; // Pra que serve isso???
+        
+        /*D� pra setar os valores na imagem e guardar em arquivo, como est� no documento de requisitos
+         *Tem que ter um m�dulo pra salvar em HD essas altorera��es, pode salvar em txt, usando um padr�o 
+         *que d� pra recuerar os valores originais
+         */
+        
+        
+        i = i < 0? 0 : i;
+        q = q < 0? 0 : q; 
+        
+        y = Math.round(y);
+        i = Math.round(i);
+        q = Math.round(q);
+        
+        return new Color(y,i,q).getRGB(); // Pra que serve isso???
     }
     
 }
