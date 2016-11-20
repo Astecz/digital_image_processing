@@ -49,7 +49,11 @@ public class GUIPrototypeController {
 	@FXML
 	private Button sobelButton;
 	@FXML
-	private Slider bandasSlider;
+	private Slider rSlider;
+    @FXML
+    private Slider gSlider;
+    @FXML
+    private Slider bSlider;
 	@FXML
 	private Button rbgyiqButton;
 	@FXML
@@ -80,10 +84,17 @@ public class GUIPrototypeController {
 	private Label contrasteLabel;
 
 	@FXML
-	private Label bandasLabel;
+	private Label rLabel;
 
-	@FXML
+    @FXML
+    private Label gLabel;
+
+    @FXML
+    private Label bLabel;
+
+    @FXML
 	private Label brilhoLabel;
+
 
 	private File imageUrl;
 	private File imageEdited;
@@ -105,6 +116,7 @@ public class GUIPrototypeController {
     private HistogramExpansion hist_exp;
     private HistogramEqualization hist_eq;
     private Thresholding thresholding;
+    private Bands bands;
 
 
     public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
@@ -131,6 +143,7 @@ public class GUIPrototypeController {
         hist_eq = new HistogramEqualization();
         average = new Average();
         thresholding = new Thresholding();
+        bands = new Bands();
 
 	}
 
@@ -156,6 +169,7 @@ public class GUIPrototypeController {
 				this.limiarizacaoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
             try {
                 this.output = processController(thresholding, Math.round(newValue.floatValue()));
+                editing(output, this.imageName);
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
@@ -172,9 +186,35 @@ public class GUIPrototypeController {
 
         });
 
-		this.bandasSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.bandasLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-		});
+		this.rSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+			this.rLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+            try {
+                this.output = processController(bands, Math.round(newValue.floatValue()));
+                editing(output, this.imageName);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        this.gSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+            this.gLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+            try {
+                this.output = processController(bands, Math.round(newValue.floatValue()));
+                editing(output, this.imageName);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        this.bSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+            this.bLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+            try {
+                this.output = processController(bands, Math.round(newValue.floatValue()));
+                editing(output, this.imageName);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        });
 
 		this.cBrilhoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
 			this.brilhoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
@@ -408,7 +448,9 @@ public class GUIPrototypeController {
         this.limiarizacaoSlider.setDisable(status);
         this.contrasteSlider.setDisable(status);
         this.sobelButton.setDisable(status);
-        this.bandasSlider.setDisable(status);
+        this.rSlider.setDisable(status);
+        this.gSlider.setDisable(status);
+        this.bSlider.setDisable(status);
         this.yiqrgbButton.setDisable(status);
         this.rbgyiqButton.setDisable(status);
         this.negativoButton.setDisable(status);
