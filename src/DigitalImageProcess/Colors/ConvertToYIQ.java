@@ -12,9 +12,9 @@ import java.awt.image.BufferedImage;
  *
  * @author Jorismar
  */
-public class ConvertToYIQ extends DigitalImageProcess.DigitalProcess {
+public abstract class ConvertToYIQ extends DigitalImageProcess.DigitalProcess {
 
-    @Override
+
     protected int transform(BufferedImage img, int px, int py, int width) {
         Color color = new Color(img.getRGB(px, py));
         

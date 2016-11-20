@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -18,7 +19,7 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author Jorismar
- */
+ *
 public class Convolution extends DigitalImageProcess.DigitalProcess {
 
     @Override
@@ -30,7 +31,7 @@ public class Convolution extends DigitalImageProcess.DigitalProcess {
     	
     	String nameout = "catlokao.jpg";
         ArrayList<Float> auxiliar = new ArrayList<Float>();
-    	BufferedImage image, output;
+    	BufferedImage image = null, output;
         float aux;
         int m=0;
         int n=0;
@@ -67,7 +68,11 @@ public class Convolution extends DigitalImageProcess.DigitalProcess {
             sharpen = new float [] {-c, -c, -c, -c, (8*c)+d, -c, -c, -c, -c}; //Gera o array q vai virar kerneljÃ¡ com as coordenadas!
         }
 
-        image = ImageIO.read(new File(namein));
+        try {
+            image = ImageIO.read(new File(namein));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         BufferedImage dstImage = null;
 
@@ -108,5 +113,5 @@ public class Convolution extends DigitalImageProcess.DigitalProcess {
 
     	return new ImageIcon(dstImage);  
     }
-    
-}
+
+}*/

@@ -13,7 +13,7 @@
           <Menu mnemonicParsing="false" text="File">
                <items>
                   <MenuItem id="openFile" fx:id="openFile" mnemonicParsing="false" onAction="#openFileHandle" text="Abrir" />
-                  <MenuItem id="saveFile" fx:id="saveFile" mnemonicParsing="false" text="Salvar" />
+                  <MenuItem id="saveFile" fx:id="saveFile" mnemonicParsing="false" onAction="#saveFileHandle" text="Salvar" />
                </items>
           </Menu>
         </menus>
@@ -60,7 +60,12 @@
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <Slider id="mascaraSlider" fx:id="mascaraSlider" layoutX="58.0" layoutY="13.0" max="255.0" minorTickCount="0" prefHeight="37.0" prefWidth="154.0" showTickLabels="true" showTickMarks="true" />
+                              <Slider id="mascaraSlider" fx:id="mascaraSlider" blockIncrement="1.0" layoutX="58.0" layoutY="20.0" majorTickUnit="32.0" max="128.0" minorTickCount="0" prefHeight="37.0" prefWidth="154.0" showTickLabels="true" showTickMarks="true" />
+                              <Label fx:id="mascaraLabel" layoutX="124.0" layoutY="5.0" text="0" textFill="WHITE">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </Pane>
                      </children>
@@ -107,20 +112,30 @@
                         </Pane>
                         <Pane layoutX="4.0" layoutY="29.0" prefHeight="57.0" prefWidth="212.0" styleClass="items">
                            <children>
-                              <Label layoutX="4.0" layoutY="13.0" text="Limiarizaçao" textFill="WHITE">
+                              <Label layoutX="4.0" layoutY="23.0" text="Limiarizaçao" textFill="WHITE">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <Slider id="limizarizacaoSlider" fx:id="limiarizacaoSlider" layoutX="70.0" layoutY="13.0" max="255.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
-                              <Slider id="limizarizacaoSlider" fx:id="contrasteSlider" layoutX="71.0" layoutY="64.0" max="255.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
-                              <Label layoutX="4.0" layoutY="67.0" text="Contraste" textFill="WHITE">
+                              <Slider id="limizarizacaoSlider" fx:id="limiarizacaoSlider" blockIncrement="1.0" layoutX="70.0" layoutY="22.0" majorTickUnit="32.0" max="128.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
+                              <Slider id="limizarizacaoSlider" fx:id="contrasteSlider" blockIncrement="1.0" layoutX="71.0" layoutY="76.0" majorTickUnit="32.0" max="128.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
+                              <Label layoutX="9.0" layoutY="77.0" text="Contraste" textFill="WHITE">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
                            </children>
                         </Pane>
+                        <Label fx:id="limiarizacaoLabel" layoutX="134.0" layoutY="37.0" text="0" textFill="WHITE">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="contrasteLabel" layoutX="134.0" layoutY="90.0" text="0" textFill="WHITE">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Label>
                      </children>
                   </Pane>
                </children>
@@ -160,14 +175,19 @@
                         </Pane>
                         <Pane layoutX="4.0" layoutY="29.0" prefHeight="57.0" prefWidth="212.0" styleClass="items">
                            <children>
-                              <Label layoutX="6.0" layoutY="12.0" text="Bandas" textFill="WHITE">
+                              <Label layoutX="20.0" layoutY="22.0" text="Bandas" textFill="WHITE">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <Slider id="bandasSlider" fx:id="bandasSlider" layoutX="70.0" layoutY="13.0" max="255.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
+                              <Slider id="bandasSlider" fx:id="bandasSlider" blockIncrement="1.0" layoutX="70.0" layoutY="22.0" majorTickUnit="32.0" max="128.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
                            </children>
                         </Pane>
+                        <Label fx:id="bandasLabel" layoutX="133.0" layoutY="34.0" text="0" textFill="WHITE">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Label>
                      </children>
                   </Pane>
                   <Pane layoutX="2.0" layoutY="196.0" prefHeight="134.0" prefWidth="224.0" styleClass="index">
@@ -193,14 +213,19 @@
                         </Pane>
                         <Pane layoutX="4.0" layoutY="29.0" prefHeight="57.0" prefWidth="212.0" styleClass="items">
                            <children>
-                              <Label layoutX="24.0" layoutY="13.0" text="C" textFill="WHITE">
+                              <Label layoutX="37.0" layoutY="21.0" text="C" textFill="WHITE">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                              <Slider id="cBrilhoSlider" fx:id="cBrilhoSlider" layoutX="70.0" layoutY="13.0" max="255.0" minorTickCount="0" prefHeight="37.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" />
+                              <Slider id="cBrilhoSlider" fx:id="cBrilhoSlider" blockIncrement="1.0" layoutX="56.0" layoutY="21.0" majorTickUnit="32.0" max="128.0" minorTickCount="0" prefHeight="37.0" prefWidth="154.0" showTickLabels="true" showTickMarks="true" />
                            </children>
                         </Pane>
+                        <Label fx:id="brilhoLabel" layoutX="132.0" layoutY="35.0" text="0" textFill="WHITE">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Label>
                      </children>
                   </Pane>
                </children>
