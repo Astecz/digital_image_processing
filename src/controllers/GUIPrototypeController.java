@@ -102,6 +102,10 @@ public class GUIPrototypeController {
     private AdaptiveContrast contrast;
     private Negative negative;
     private AdditiveBrightness additive;
+    private HistogramExpansion hist_exp;
+    private HistogramEqualization hist_eq;
+    private Thresholding thresholding;
+
 
     public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
@@ -122,6 +126,11 @@ public class GUIPrototypeController {
         contrast = new AdaptiveContrast(1.0f);
         negative = new Negative();
         additive = new AdditiveBrightness();
+        sobel = new SobelGradient();
+        hist_exp = new HistogramExpansion();
+        hist_eq = new HistogramEqualization();
+        average = new Average();
+        thresholding = new Thresholding();
 
 	}
 
@@ -145,7 +154,12 @@ public class GUIPrototypeController {
 
 		this.limiarizacaoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
 				this.limiarizacaoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-		});
+            try {
+                this.output = processController(thresholding, Math.round(newValue.floatValue()));
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        });
 
 		this.contrasteSlider.valueProperty().addListener((observable, oldValue, newValue)->{
 			this.contrasteLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
@@ -231,8 +245,13 @@ public class GUIPrototypeController {
             alert.setContentText("Valor para a máscara!");
             alert.showAndWait();
         }
-		//this.output = filterController(median, this.mediaValue);
-	}
+        try {
+            this.output = processController(average, this.mascaraValue);
+            editing(output, this.imageName);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
 
 	/**
 	 * The function will apply the value got in mask.
@@ -267,8 +286,13 @@ public class GUIPrototypeController {
 	 */
 	@FXML
 	public void expansaoClicked(ActionEvent event){
-
-	}
+        try {
+            this.output = processController(hist_exp, null);
+            editing(output, this.imageName);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
 
 	/**
 	 *
@@ -276,8 +300,14 @@ public class GUIPrototypeController {
 	 */
 	@FXML
 	public void equalizacaoClicked(ActionEvent event){
+        try {
+            this.output = processController(hist_eq, null);
+            editing(output, this.imageName);
 
-	}
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
 
 	/**
 	 *
@@ -285,8 +315,13 @@ public class GUIPrototypeController {
 	 */
 	@FXML
 	public void sobelClicked(ActionEvent event){
-
-	}
+        try {
+            this.output = processController(sobel, null);
+            editing(output, this.imageName);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 	/**
