@@ -12,12 +12,15 @@ import java.awt.image.BufferedImage;
  *
  * @author Jorismar
  */
-public class ConvertToYIQ extends DigitalImageProcess.DigitalProcess {
+public abstract class ConvertToYIQ extends DigitalImageProcess.DigitalProcess {
+
+
 
     @Override
     protected int transform(BufferedImage img, int px, int py, Object arg) {
         
     	Color color = new Color(img.getRGB(px, py));
+
         
         int r = color.getRed();
         int g = color.getGreen();
@@ -28,9 +31,9 @@ public class ConvertToYIQ extends DigitalImageProcess.DigitalProcess {
         float q = ((0.212f * r) - (0.523f * g) + (0.311f * b));       
         
         
-        /*Dá pra setar os valores na imagem e guardar em arquivo, como está no documento de requisitos
-         *Tem que ter um módulo pra salvar em HD essas altorerações, pode salvar em txt, usando um padrão 
-         *que dê pra recuerar os valores originais
+        /*Dï¿½ pra setar os valores na imagem e guardar em arquivo, como estï¿½ no documento de requisitos
+         *Tem que ter um mï¿½dulo pra salvar em HD essas altoreraï¿½ï¿½es, pode salvar em txt, usando um padrï¿½o 
+         *que dï¿½ pra recuerar os valores originais
          */
         
         

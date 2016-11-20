@@ -8,6 +8,12 @@ import DigitalImageProcess.DigitalProcess;
 import DigitalImageProcess.Effects.*;
 import DigitalImageProcess.Filters.*;
 import DigitalImageProcess.Luminosity.*;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,13 +26,31 @@ import javax.imageio.ImageIO;
  *
  * @author Jorismar
  */
-public class Main {
+public class Main extends Application {
     private static BufferedImage image;
     
     public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
     }
-    
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("assets/views/GUIPrototype.fxml"));
+
+        Scene scene = new Scene(root, 1095, 529);
+
+        primaryStage.setTitle("Image editor");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+
+
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+    /*
     public static void main(String[] args) {
         try {
             Average avg = new Average();
@@ -75,5 +99,5 @@ public class Main {
         } catch (IOException | CloneNotSupportedException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }*/
 }

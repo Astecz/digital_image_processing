@@ -5,21 +5,25 @@
  */
 package DigitalImageProcess.Colors;
 
-import java.awt.Color;
+
+import DigitalImageProcess.DigitalProcess;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
  *
  * @author Jorismar
  */
+
 public class ConvertToRGB extends DigitalImageProcess.DigitalProcess {
 	@Override
 	protected int transform(BufferedImage img, int px, int py, Object arg) {
 
-		Color color = new Color(img.getRGB(px, py));
+		Color	 color = new Color(img.getRGB(px, py));
 
 		/*
-		 * Lê do arquivo os valores de YIQ, salvo na conversão RGB->YIQ Mas por
+		 * Lï¿½ do arquivo os valores de YIQ, salvo na conversï¿½o RGB->YIQ Mas por
 		 * enquanto vou deixar pegando os valores da imagem de entrada
 		 */
 
@@ -46,4 +50,5 @@ public class ConvertToRGB extends DigitalImageProcess.DigitalProcess {
 		return new Color((int) (R), (int) G, (int) B).getRGB();
 
 	}
+
 }
