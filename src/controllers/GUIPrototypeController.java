@@ -109,7 +109,7 @@ public class GUIPrototypeController {
 	private MaskSetter mask;
     private Alert alert;
 	private BufferedImage output;
-	private static BufferedImage image;
+	private static BufferedImage image; //ESTA VARIÁVEL DEVERIA SER DO TIPO DIGITALIMAGEPROCESS.TOOLS.IMAGE
 	private String imageName = "/new_lena.png";
 	private int mascaraValue = 0;
     private AdaptiveContrast contrast;
