@@ -7,11 +7,16 @@ package DigitalImageProcess.Tools;
 
 import java.awt.image.BufferedImage;
 
+import controllers.ImageCareTaker;
+
 /**
  *
  * @author Jorismar
  */
 public class Image {
+	
+	protected Image currentImage;//guarda o estado atual da imagem
+	
     public static BufferedImage clone(BufferedImage img) {
         return new BufferedImage(
             img.getColorModel(), 
@@ -19,5 +24,30 @@ public class Image {
             img.getColorModel().isAlphaPremultiplied(), 
             null
         );
+    }
+    
+    public void pushImageState(){
+    	ImageCareTaker.getInstance().addMemento(currentImage);
+    }
+    
+    public void undoStateImage(){
+    	
+    	try {
+			currentImage = ImageCareTaker.getInstance().getLastImageSaved();
+		} catch (Exception e) {
+			//VER O QUE FAZER COM A MENSAGEM DE ERRO, SE VAI TRATAR ESSA EXCEÇÃO AQUI
+		}
+    }
+    
+    public Image getCurrentImage() throws Exception{
+    	
+    	if(currentImage != null)
+    		return currentImage;
+    	
+    	throw new Exception("There aren't saved image yet!"); 
+    }
+    
+    public void setCurrentImage(Image img){
+    	currentImage = img;
     }
 }
