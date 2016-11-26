@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import DigitalImageProcess.Colors.ConvertToRGB;
+import DigitalImageProcess.Colors.ConvertToYIQ;
 import DigitalImageProcess.DigitalProcess;
 import DigitalImageProcess.Effects.*;
 import DigitalImageProcess.Filters.*;
@@ -16,7 +18,12 @@ import javafx.stage.Stage;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,13 +33,13 @@ import javax.imageio.ImageIO;
  *
  * @author Jorismar
  */
-public class Main extends Application {
+public class Main {//extends Application {
     private static BufferedImage image;
     
     public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
     }
-
+/*
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("assets/views/GUIPrototype.fxml"));
@@ -46,9 +53,32 @@ public class Main extends Application {
 
 
     }
-
+*/
     public static void main(String[] args) {
-        launch(args);
+        //launch(args);
+        ConvertToYIQ yiq = new ConvertToYIQ();
+        ConvertToRGB rgb = new ConvertToRGB();
+        
+        
+        try {
+            image = ImageIO.read(new File("lena.png"));
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter("yiq.txt"));
+            processController(yiq, writer);
+            writer.close();
+
+            BufferedReader reader = new BufferedReader(new FileReader("yiq.txt"));
+            BufferedImage output1 = processController(rgb, reader);
+            reader.close();
+            ImageIO.write(output1, "png", new File("processed/yiq2rgb.png"));
+            
+        } catch (FileNotFoundException ex) {
+            System.err.println("FileNotFoundException");
+        } catch (CloneNotSupportedException ex) {
+            System.err.println("CloneNotSupportedException");
+        } catch (IOException ex) {
+            System.err.println("IOException");
+        }
     }
     /*
     public static void main(String[] args) {
