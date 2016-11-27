@@ -11,10 +11,17 @@ import DigitalImageProcess.Effects.*;
 import DigitalImageProcess.Filters.*;
 import DigitalImageProcess.Luminosity.*;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import utils.ViewsManipulate;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -40,18 +47,34 @@ public class Main extends Application {//extends Application {
         return process.apply(image, arg);
     }
 
+
+
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("assets/views/GUIPrototype.fxml"));
+    public void start(Stage primaryStage) {
+        Parent root = null;
+        ViewsManipulate views = ViewsManipulate.getInstance();
+        views.setPrimaryWindows(primaryStage);
+        primaryStage.setOnCloseRequest(t -> {
+            Platform.exit();
+            System.exit(0);
+        });
 
-        Scene scene = new Scene(root, 1095, 529);
 
-        primaryStage.setTitle("Image editor");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        try {
+            root = FXMLLoader.load(getClass().getResource("assets/views/GUIPrototype.fxml"));
+            Scene scene = new Scene(root, 1095, 529);
+            ViewsManipulate.getInstance().getPrimaryWindows().setTitle("Image editor");
+            ViewsManipulate.getInstance().getPrimaryWindows().setScene(scene);
+            ViewsManipulate.getInstance().getPrimaryWindows().show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
 
     }
+
 /*
     public static void main(String[] args) {
         //launch(args);

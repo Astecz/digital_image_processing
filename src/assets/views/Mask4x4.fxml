@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="267.0" prefWidth="306.0" styleClass="index" stylesheets="@../css/options.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutX="3.0" layoutY="36.0" prefHeight="227.0" prefWidth="300.0" styleClass="options">
+         <children>
+            <Pane layoutX="1.0" layoutY="1.0" prefHeight="225.0" prefWidth="298.0" styleClass="items">
+               <children>
+                  <TextField fx:id="input1x1" layoutX="17.0" layoutY="15.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input2x1" layoutX="18.0" layoutY="59.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input3x1" layoutX="18.0" layoutY="102.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input3x2" layoutX="85.0" layoutY="102.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input2x2" layoutX="84.0" layoutY="59.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input1x2" layoutX="83.0" layoutY="15.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input1x3" layoutX="151.0" layoutY="15.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input2x3" layoutX="152.0" layoutY="59.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input3x3" layoutX="152.0" layoutY="102.0" prefHeight="32.0" prefWidth="57.0" />
+                  <Button id="items" fx:id="confirmButton" layoutX="197.0" layoutY="192.0" mnemonicParsing="false" text="Confirmar" />
+                  <Button id="items" fx:id="cancelButton" layoutX="115.0" layoutY="192.0" mnemonicParsing="false" text="Cancelar" />
+                  <TextField fx:id="input1x4" layoutX="219.0" layoutY="15.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input2x4" layoutX="220.0" layoutY="59.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input3x4" layoutX="219.0" layoutY="101.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input4x4" layoutX="219.0" layoutY="144.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input4x3" layoutX="152.0" layoutY="145.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input4x2" layoutX="85.0" layoutY="145.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input4x1" layoutX="18.0" layoutY="145.0" prefHeight="32.0" prefWidth="57.0" />
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+      <Label layoutX="76.0" layoutY="10.0" prefHeight="24.0" prefWidth="173.0" text="Valores da Mascara 4x4" textFill="WHITE" />
+   </children>
+</Pane>

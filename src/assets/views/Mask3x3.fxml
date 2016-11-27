@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane fx:id="mask3x3Panel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="221.0" prefWidth="233.0" styleClass="index" stylesheets="@../css/options.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Mask3x3Controller">
+   <children>
+      <Pane layoutX="3.0" layoutY="36.0" prefHeight="181.0" prefWidth="227.0" styleClass="options">
+         <children>
+            <Pane layoutX="1.0" layoutY="1.0" prefHeight="179.0" prefWidth="225.0" styleClass="items">
+               <children>
+                  <TextField fx:id="input1x1" layoutX="17.0" layoutY="15.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input2x1" layoutX="18.0" layoutY="59.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input3x1" layoutX="18.0" layoutY="102.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input3x2" layoutX="85.0" layoutY="102.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input2x2" layoutX="84.0" layoutY="59.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input1x2" layoutX="83.0" layoutY="15.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input1x3" layoutX="151.0" layoutY="15.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input2x3" layoutX="152.0" layoutY="59.0" prefHeight="32.0" prefWidth="57.0" />
+                  <TextField fx:id="input3x3" layoutX="152.0" layoutY="102.0" prefHeight="32.0" prefWidth="57.0" />
+                  <Button id="items" fx:id="confirmButton" layoutX="119.0" layoutY="146.0" mnemonicParsing="false" onAction="#confirmButtonAction" text="Confirmar" />
+                  <Button id="items" fx:id="cancelButton" layoutX="37.0" layoutY="146.0" mnemonicParsing="false" onAction="#cancelButtonAction" text="Cancelar" />
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+      <Label layoutX="36.0" layoutY="10.0" prefHeight="24.0" prefWidth="173.0" text="Valores da Mascara 3x3" textFill="WHITE" />
+   </children>
+</Pane>

@@ -8,6 +8,11 @@ import DigitalImageProcess.Effects.Negative;
 import DigitalImageProcess.Effects.Thresholding;
 import DigitalImageProcess.Luminosity.*;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,19 +32,29 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import DigitalImageProcess.Filters.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import utils.ViewsManipulate;
 
 
 /**
  * @author Claudio Djohnnatha
  */
-public class GUIPrototypeController {
+public class GUIPrototypeController implements Initializable {
 	@FXML
 	private Pane mainPanel;
 
 	@FXML
-	private Slider mascaraSlider;
+	private Button mask3x3Button;
+
+	@FXML
+	private Button mask4x4Button;
+
 	@FXML
 	private Button mediaButton;
 	@FXML
@@ -76,8 +91,6 @@ public class GUIPrototypeController {
 	@FXML
 	private ImageView imageView;
 
-	@FXML
-	private Label mascaraLabel;
 
 	@FXML
 	private Label limiarizacaoLabel;
@@ -131,12 +144,19 @@ public class GUIPrototypeController {
     private Bands bands;
 	private Color imageRGB;
     private int brightValue;
+	private ViewsManipulate otherView;
+	private ArrayList<Integer> matrix;
+
+
+
 
     public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
     }
 
-	public GUIPrototypeController(){
+
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
 		this.fileChooser = new FileChooser();
 		fileChooser.setTitle("Selecione a imagem");
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
@@ -145,21 +165,23 @@ public class GUIPrototypeController {
 		);
 
 
-        this.alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Alerta");
-        this.mask = new MaskSetter();
-        contrast = new AdaptiveContrast(1.0f);
-        negative = new Negative();
-        additive = new AdditiveBrightnes();
-        sobel = new SobelGradient();
-        hist_exp = new HistogramExpansion();
-        hist_eq = new HistogramEqualization();
-        average = new Average();
-        thresholding = new Thresholding();
-        bands = new Bands();
-        multiplicative = new MultiplicativeBrightnes();
-
+		this.alert = new Alert(Alert.AlertType.WARNING);
+		alert.setTitle("Alerta");
+		this.mask = new MaskSetter();
+		contrast = new AdaptiveContrast(1.0f);
+		negative = new Negative();
+		additive = new AdditiveBrightnes();
+		sobel = new SobelGradient();
+		hist_exp = new HistogramExpansion();
+		hist_eq = new HistogramEqualization();
+		average = new Average();
+		thresholding = new Thresholding();
+		bands = new Bands();
+		multiplicative = new MultiplicativeBrightnes();
+		otherView = new ViewsManipulate();
+		matrix = new ArrayList<Integer>();
 	}
+
 
 	/**
 	 * Initializing buttons handle.
@@ -167,10 +189,6 @@ public class GUIPrototypeController {
 	@FXML
 	private void initialize(){
         buttonStatus(true);
-
-        this.mascaraSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-                this.mascaraLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-        });
 
         this.limiarizacaoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
             this.limiarizacaoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
@@ -196,19 +214,6 @@ public class GUIPrototypeController {
 			this.bLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
 		});
 
-
-        this.mascaraSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) -> {
-            if(!isNowChanging) {
-                this.mascaraValue = (int) this.mascaraSlider.getValue();
-                try {
-                    this.output = processController(mask, this.mascaraValue);
-                    this.mascaraLabel.setText(String.valueOf(this.mascaraValue));
-                    editing(output, this.imageName);
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
         this.limiarizacaoSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
                 if(!isNowChanging) {
                     try {
@@ -328,6 +333,24 @@ public class GUIPrototypeController {
 			e.printStackTrace();
 		}
 	}
+
+	@FXML
+	public void mask3x3Action(ActionEvent event){
+		Mask3x3Controller mask3x3 = (Mask3x3Controller) otherView.loadScreen(getClass(), "/assets/views/Mask3x3.fxml", "Mascara 3x3",
+				233, 221);
+
+		if(mask3x3 != null){
+			mask3x3.setValueReturn(matrix1 -> {
+				this.matrix = matrix1;
+				System.out.println(matrix1.get(0));
+			});
+
+		}
+
+
+	}
+
+
 
 	/**
 	 *	Function will apply the value from mask.
@@ -520,7 +543,8 @@ public class GUIPrototypeController {
      * @param status it's a boolean wich is true to disable and false to enable.
      */
 	public void buttonStatus(boolean status){
-		this.mascaraSlider.setDisable(status);
+		//this.mask3x3Button.setDisable(status);
+		this.mask4x4Button.setDisable(status);
         this.mediaButton.setDisable(status);
         this.medianaButton.setDisable(status);
         this.convolucaoButton.setDisable(status);
@@ -540,6 +564,7 @@ public class GUIPrototypeController {
         this.aditivoButton.setDisable(status);
         this.saveFile.setDisable(status);
 	}
+
 
 
 }
