@@ -7,10 +7,6 @@ import DigitalImageProcess.Effects.Bands;
 import DigitalImageProcess.Effects.Negative;
 import DigitalImageProcess.Effects.Thresholding;
 import DigitalImageProcess.Luminosity.*;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -18,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.event.ActionEvent;
@@ -27,6 +22,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -125,12 +121,14 @@ public class GUIPrototypeController {
 	private int mascaraValue = 0;
     private AdaptiveContrast contrast;
     private Negative negative;
-    //private AdditiveBrightness additive;
+    private AdditiveBrightnes additive;
+    MultiplicativeBrightnes multiplicative;
     private HistogramExpansion hist_exp;
     private HistogramEqualization hist_eq;
     private Thresholding thresholding;
     private Bands bands;
 	private Color imageRGB;
+    private int brightValue;
 
     public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
@@ -150,13 +148,14 @@ public class GUIPrototypeController {
         this.mask = new MaskSetter();
         contrast = new AdaptiveContrast(1.0f);
         negative = new Negative();
-        //additive = new AdditiveBrightness();
+        additive = new AdditiveBrightnes();
         sobel = new SobelGradient();
         hist_exp = new HistogramExpansion();
         hist_eq = new HistogramEqualization();
         average = new Average();
         thresholding = new Thresholding();
         bands = new Bands();
+        multiplicative = new MultiplicativeBrightnes();
 
 	}
 
@@ -232,12 +231,13 @@ public class GUIPrototypeController {
 
         this.cBrilhoSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
             if(!isNowChanging) {
-                /*try {
-                    this.output = processController(additive, (int) this.cBrilhoSlider.getValue());
+                try {
+                    this.brightValue = (int) this.cBrilhoSlider.getValue();
+                    this.output = processController(additive, brightValue);
                     editing(output, this.imageName);
                 } catch (CloneNotSupportedException e) {
                     e.printStackTrace();
-                }*/
+                }
             }
         });
 
@@ -307,19 +307,22 @@ public class GUIPrototypeController {
 	public void saveFileHandle(ActionEvent event){
 		fileChooser = new FileChooser();
 		fileChooser.setTitle("Salvar imagem");
-		imageUrl = fileChooser.showOpenDialog(mainPanel.getScene().getWindow());
-		if(output != null){
-			try {
-				url = imageUrl.toURI().toURL();
-				image = ImageIO.read(imageUrl);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+		File finalImageUrl = fileChooser.showSaveDialog(mainPanel.getScene().getWindow());
+		System.out.println("IMAGE: " + imageUrl);
+		String temp = finalImageUrl.getParent() + "/" + finalImageUrl.getName() + ".png";
+
+		try {
+			if(output == null){
+				ImageIO.write(image, "png", new File(temp));
+			}else{
+				ImageIO.write(output, "png", new File(temp));
 			}
-			imageView.setImage(new Image(url.toExternalForm()));
-			System.out.println(imageUrl);
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		//imageEdited = new File(temp);
+		//url = imageEdited.toURI().toURL();
 	}
 
 	/**
@@ -456,6 +459,17 @@ public class GUIPrototypeController {
 	 */
 	@FXML
 	public void multiplicativoClicked(ActionEvent event){
+        if(this.brightValue <= 0){
+            alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alert.setContentText("Valor para o brilho tem que ser diferente de 0!");
+            alert.showAndWait();
+        }else {
+            try {
+                this.output = processController(multiplicative, this.brightValue);
+                editing(output, this.imageName);
+            } catch (CloneNotSupportedException e) {
+            }
+        }
 
 	}
 
@@ -465,7 +479,17 @@ public class GUIPrototypeController {
 	 */
 	@FXML
 	public void aditivoClicked(ActionEvent event){
-
+        if(this.brightValue <= 0){
+            alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alert.setContentText("Valor para o brilho tem que ser diferente de 0!");
+            alert.showAndWait();
+        }else {
+            try {
+                this.output = processController(additive, this.brightValue);
+                editing(output, this.imageName);
+            } catch (CloneNotSupportedException e) {
+            }
+        }
 	}
 
 	/**
