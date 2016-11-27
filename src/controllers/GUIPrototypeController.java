@@ -8,15 +8,23 @@ import DigitalImageProcess.Effects.Negative;
 import DigitalImageProcess.Effects.Thresholding;
 import DigitalImageProcess.Luminosity.*;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.event.ActionEvent;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -51,12 +59,6 @@ public class GUIPrototypeController {
 	@FXML
 	private Button sobelButton;
 	@FXML
-	private Slider rSlider;
-    @FXML
-    private Slider gSlider;
-    @FXML
-    private Slider bSlider;
-	@FXML
 	private Button rbgyiqButton;
 	@FXML
 	private Button yiqrgbButton;
@@ -86,16 +88,25 @@ public class GUIPrototypeController {
 	private Label contrasteLabel;
 
 	@FXML
-	private Label rLabel;
+	private Slider rSlider;
 
     @FXML
-    private Label gLabel;
+    private Slider gSlider;
 
     @FXML
-    private Label bLabel;
+    private Slider bSlider;
 
     @FXML
 	private Label brilhoLabel;
+
+    @FXML
+    private Label rLabel;
+
+	@FXML
+	private Label gLabel;
+
+	@FXML
+	private Label bLabel;
 
 
 	private File imageUrl;
@@ -109,17 +120,17 @@ public class GUIPrototypeController {
 	private MaskSetter mask;
     private Alert alert;
 	private BufferedImage output;
-	private static BufferedImage image; //ESTA VARI�VEL DEVERIA SER DO TIPO DIGITALIMAGEPROCESS.TOOLS.IMAGE
+	private static BufferedImage image; //ESTA VARI�VEL DEVERIA SER DO TIPO DIGITALIMAGEPROCESS.TOOLS.IMAGE
 	private String imageName = "/new_lena.png";
 	private int mascaraValue = 0;
     private AdaptiveContrast contrast;
     private Negative negative;
-    private AdditiveBrightness additive;
+    //private AdditiveBrightness additive;
     private HistogramExpansion hist_exp;
     private HistogramEqualization hist_eq;
     private Thresholding thresholding;
     private Bands bands;
-
+	private Color imageRGB;
 
     public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
@@ -128,18 +139,18 @@ public class GUIPrototypeController {
 	public GUIPrototypeController(){
 		this.fileChooser = new FileChooser();
 		fileChooser.setTitle("Selecione a imagem");
-		fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))
-		);
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 		fileChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
 		);
 
+
         this.alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Alerta");
-
+        this.mask = new MaskSetter();
         contrast = new AdaptiveContrast(1.0f);
         negative = new Negative();
-        additive = new AdditiveBrightness();
+        //additive = new AdditiveBrightness();
         sobel = new SobelGradient();
         hist_exp = new HistogramExpansion();
         hist_eq = new HistogramEqualization();
@@ -155,84 +166,120 @@ public class GUIPrototypeController {
 	@FXML
 	private void initialize(){
         buttonStatus(true);
-		this.mascaraSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			try {
-                mask = new MaskSetter();
-				this.mascaraValue = Math.round(newValue.floatValue());
-				this.output = processController(mask, this.mascaraValue);
-				this.mascaraLabel.setText(String.valueOf(this.mascaraValue));
-				editing(output, this.imageName);
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
-		});
 
-		this.limiarizacaoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-				this.limiarizacaoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(thresholding, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+        this.mascaraSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+                this.mascaraLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
         });
 
-		this.contrasteSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.contrasteLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(contrast, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+        this.limiarizacaoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+            this.limiarizacaoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+        });
 
+        this.contrasteSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+            this.contrasteLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+        });
+
+        this.cBrilhoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+            this.brilhoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
         });
 
 		this.rSlider.valueProperty().addListener((observable, oldValue, newValue)->{
 			this.rLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(bands, newValue.floatValue());
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
+		});
+
+		this.gSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+			this.gLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+		});
+
+		this.bSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+			this.bLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+		});
+
+
+        this.mascaraSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) -> {
+            if(!isNowChanging) {
+                this.mascaraValue = (int) this.mascaraSlider.getValue();
+                try {
+                    this.output = processController(mask, this.mascaraValue);
+                    this.mascaraLabel.setText(String.valueOf(this.mascaraValue));
+                    editing(output, this.imageName);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        this.limiarizacaoSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+                if(!isNowChanging) {
+                    try {
+                        this.output = processController(thresholding, (int) this.limiarizacaoSlider.getValue());
+                        editing(output, this.imageName);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+        });
+
+        this.contrasteSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+            if(!isNowChanging) {
+                try {
+                    this.output = processController(contrast, (int) this.contrasteSlider.getValue());
+                    editing(output, this.imageName);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-        this.gSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-            this.gLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(bands, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
+        this.cBrilhoSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+            if(!isNowChanging) {
+                /*try {
+                    this.output = processController(additive, (int) this.cBrilhoSlider.getValue());
+                    editing(output, this.imageName);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }*/
             }
         });
 
-        this.bSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-            this.bLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(bands, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-        });
+		this.rSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+			if(!isNowChanging) {
+				try {
+					this.output = processController(bands, new Color((int) rSlider.getValue(), 0 ,0));
+					editing(output, this.imageName);
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 
-		this.cBrilhoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.brilhoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(additive, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-        });
+		this.gSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+			if(!isNowChanging) {
+				try {
+					this.output = processController(bands, new Color(0, (int) gSlider.getValue(), 0));
+					editing(output, this.imageName);
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		this.bSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+			if(!isNowChanging) {
+				try {
+					this.output = processController(bands, new Color(0, 0, (int) gSlider.getValue()));
+					editing(output, this.imageName);
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+    }
 
 
 
 
 
-	}
 
 	/**
 	 * Need finish it
@@ -286,13 +333,15 @@ public class GUIPrototypeController {
             alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
             alert.setContentText("Valor para a máscara!");
             alert.showAndWait();
-        }
-        try {
-            this.output = processController(average, this.mascaraValue);
-            editing(output, this.imageName);
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+        }else{
+			try {
+				this.output = processController(average, this.mascaraValue);
+				editing(output, this.imageName);
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+		}
+
     }
 
 	/**
@@ -305,12 +354,14 @@ public class GUIPrototypeController {
             alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
             alert.setContentText("Um valor para a máscara!");
             alert.showAndWait();
-        }
-		try {
-			this.output = processController(median, this.mascaraValue);
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
+        }else{
+			try {
+				this.output = processController(median, this.mascaraValue);
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 		}
+
 	}
 
 	/**
