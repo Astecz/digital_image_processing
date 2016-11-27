@@ -26,6 +26,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+
 import DigitalImageProcess.Filters.*;
 
 
@@ -316,13 +318,15 @@ public class GUIPrototypeController {
 				ImageIO.write(image, "png", new File(temp));
 			}else{
 				ImageIO.write(output, "png", new File(temp));
+				imageEdited.delete();
 			}
+
+
+
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//imageEdited = new File(temp);
-		//url = imageEdited.toURI().toURL();
 	}
 
 	/**
