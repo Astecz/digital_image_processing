@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import DigitalImageProcess.Colors.ConvertToRGB;
+import DigitalImageProcess.Colors.ConvertToYIQ;
 import DigitalImageProcess.DigitalProcess;
 import DigitalImageProcess.Effects.*;
 import DigitalImageProcess.Filters.*;
@@ -16,7 +18,12 @@ import javafx.stage.Stage;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,9 +33,9 @@ import javax.imageio.ImageIO;
  *
  * @author Jorismar
  */
-public class Main extends Application {
+public class Main extends Application {//extends Application {
     private static BufferedImage image;
-    
+
     public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
     }
@@ -44,15 +51,72 @@ public class Main extends Application {
         primaryStage.show();
 
 
-
     }
+/*
+    public static void main(String[] args) {
+        //launch(args);
+        Convolution conv = new Convolution();
+        
+    /********* Configure Mask *********
+        Mask mask = new Mask();
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-    /*
-    public static void main(String[] args) {
+        // Create matrix 3x3
+        mask.createMatrix(3, 3);
+        
+        // Fill matrix
+        for(int i = 0; i < 3; i++)
+            for(int j = 0; j < 3; j++)
+                mask.setMatrixValue(i, j, i + j);
+        
+        // Set offset
+        mask.setOffset(3);
+        
+        // Set sharpen
+        mask.setSharpen(1, 2);
+    /**********************************
+
         try {
+            image = ImageIO.read(new File("lena.png"));
+            BufferedImage output1 = processController(conv, mask);
+            ImageIO.write(output1, "png", new File("processed/convolution.png"));
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+}   
+        
+        
+/*
+            ConvertToYIQ yiq = new ConvertToYIQ();
+            ConvertToRGB rgb = new ConvertToRGB();
+            
+            try {
+            image = ImageIO.read(new File("lena.png"));
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter("yiq.txt"));
+            processController(yiq, writer);
+            writer.close();
+
+            BufferedReader reader = new BufferedReader(new FileReader("yiq.txt"));
+            BufferedImage output1 = processController(rgb, reader);
+            reader.close();
+            ImageIO.write(output1, "png", new File("processed/yiq2rgb.png"));
+            
+            } catch (FileNotFoundException ex) {
+            System.err.println("FileNotFoundException");
+            } catch (CloneNotSupportedException ex) {
+            System.err.println("CloneNotSupportedException");
+            } catch (IOException ex) {
+            System.err.println("IOException");
+            }
+            }
+            
+            */
+            /*
+            public static void main(String[] args) {
+            try {
             Average avg = new Average();
             Median med = new Median();
             SobelGradient sbl = new SobelGradient();
@@ -96,8 +160,8 @@ public class Main extends Application {
             ImageIO.write(output13, "png", new File("processed/multiplicative.png"));
             
             System.out.println("Done!");
-        } catch (IOException | CloneNotSupportedException ex) {
+            } catch (IOException | CloneNotSupportedException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }*/
+            }
+        }*/
 }
