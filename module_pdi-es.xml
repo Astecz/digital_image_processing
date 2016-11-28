@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_pdi-es" default="compile.module.pdi-es">
+  <dirname property="module.pdi-es.basedir" file="${ant.file.module_pdi-es}"/>
+  
+  <property name="module.jdk.home.pdi-es" value="${jdk.home.1.8}"/>
+  <property name="module.jdk.bin.pdi-es" value="${jdk.bin.1.8}"/>
+  <property name="module.jdk.classpath.pdi-es" value="jdk.classpath.1.8"/>
+  
+  <property name="compiler.args.pdi-es" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="pdi-es.output.dir" value="${module.pdi-es.basedir}/bin"/>
+  <property name="pdi-es.testoutput.dir" value="${module.pdi-es.basedir}/bin"/>
+  
+  <path id="pdi-es.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="pdi-es.module.production.classpath">
+    <path refid="${module.jdk.classpath.pdi-es}"/>
+  </path>
+  
+  <path id="pdi-es.runtime.production.module.classpath">
+    <pathelement location="${pdi-es.output.dir}"/>
+  </path>
+  
+  <path id="pdi-es.module.classpath">
+    <pathelement location="${pdi-es.output.dir}"/>
+    <path refid="${module.jdk.classpath.pdi-es}"/>
+  </path>
+  
+  <path id="pdi-es.runtime.module.classpath">
+    <pathelement location="${pdi-es.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.pdi-es">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.pdi-es">
+    <patternset refid="excluded.from.module.pdi-es"/>
+  </patternset>
+  
+  <path id="pdi-es.module.sourcepath">
+    <dirset dir="${module.pdi-es.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.pdi-es" depends="compile.module.pdi-es.production,compile.module.pdi-es.tests" description="Compile module PDI-ES"/>
+  
+  <target name="compile.module.pdi-es.production" depends="register.custom.compilers" description="Compile module PDI-ES; production classes">
+    <mkdir dir="${pdi-es.output.dir}"/>
+    <javac2 destdir="${pdi-es.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.pdi-es}/javac">
+      <compilerarg line="${compiler.args.pdi-es}"/>
+      <bootclasspath refid="pdi-es.module.bootclasspath"/>
+      <classpath refid="pdi-es.module.production.classpath"/>
+      <src refid="pdi-es.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.pdi-es"/>
+    </javac2>
+    
+    <copy todir="${pdi-es.output.dir}">
+      <fileset dir="${module.pdi-es.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.pdi-es.tests" depends="register.custom.compilers,compile.module.pdi-es.production" description="compile module PDI-ES; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.pdi-es" description="cleanup module">
+    <delete dir="${pdi-es.output.dir}"/>
+    <delete dir="${pdi-es.testoutput.dir}"/>
+  </target>
+</project>

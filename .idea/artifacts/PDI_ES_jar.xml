@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="PDI-ES:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/PDI_ES_jar</output-path>
+    <root id="archive" name="PDI-ES.jar">
+      <element id="module-output" name="PDI-ES" />
+    </root>
+  </artifact>
+</component>
