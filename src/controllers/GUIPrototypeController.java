@@ -134,7 +134,7 @@ public class GUIPrototypeController implements Initializable {
     private AdaptiveContrast contrast;
     private Negative negative;
     private AdditiveBrightnes additive;
-    MultiplicativeBrightnes multiplicative;
+    private MultiplicativeBrightnes multiplicative;
     private HistogramExpansion hist_exp;
     private HistogramEqualization hist_eq;
     private Thresholding thresholding;
@@ -145,7 +145,7 @@ public class GUIPrototypeController implements Initializable {
 	private ArrayList<Integer> matrix;
 	private ConvertToYIQ yiq;
 	private ConvertToRGB rgb;
-	Convolution convolution;
+	private Convolution convolution;
 
 
 
@@ -183,6 +183,7 @@ public class GUIPrototypeController implements Initializable {
 		yiq = new ConvertToYIQ();
 		rgb = new ConvertToRGB();
 		convolution = new Convolution();
+		median = new Median();
 
         buttonStatus(true);
 
@@ -395,7 +396,7 @@ public class GUIPrototypeController implements Initializable {
 
 				 // Set sharpen
 				 mask.setSharpen(1, 2);
-
+				/** ------------------ **/
 				try {
 					this.output = processController(convolution, mask);
 					editing(output, imageName);
