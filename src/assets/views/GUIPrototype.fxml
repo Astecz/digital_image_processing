@@ -195,12 +195,7 @@
                            <children>
                               <Pane layoutX="2.0" layoutY="35.0" prefHeight="40.0" prefWidth="212.0" styleClass="items">
                                  <children>
-                                    <Button id="multiplicativoButton" fx:id="multiplicativoButton" layoutX="17.0" layoutY="7.0" mnemonicParsing="false" onAction="#multiplicativoClicked" prefHeight="25.0" prefWidth="85.0" text="Multiplicativo">
-                                       <font>
-                                          <Font size="10.0" />
-                                       </font>
-                                    </Button>
-                                    <Button id="aditivoButton" fx:id="aditivoButton" layoutX="111.0" layoutY="7.0" mnemonicParsing="false" onAction="#aditivoClicked" prefHeight="25.0" prefWidth="84.0" text="Aditivo">
+                                    <Button id="multiplicativoButton" fx:id="multiplicativoButton" layoutX="46.0" layoutY="7.0" mnemonicParsing="false" onAction="#multiplicativoClicked" prefHeight="25.0" prefWidth="126.0" text="Multiplicativo">
                                        <font>
                                           <Font size="10.0" />
                                        </font>

@@ -72,8 +72,7 @@ public class GUIPrototypeController implements Initializable {
 	private Slider cBrilhoSlider;
 	@FXML
 	private Button multiplicativoButton;
-	@FXML
-	private Button aditivoButton;
+
 	@FXML
 	private MenuItem openFile;
 	@FXML
@@ -557,25 +556,6 @@ public class GUIPrototypeController implements Initializable {
 
 	/**
 	 *
-	 * @param event of click in aditivo button
-	 */
-	@FXML
-	public void aditivoClicked(ActionEvent event){
-        if(this.brightValue <= 0){
-            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
-            alertWarning.setContentText("Valor para o brilho tem que ser diferente de 0!");
-            alertWarning.showAndWait();
-        }else {
-            try {
-                this.output = processController(additive, this.brightValue);
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-            }
-        }
-	}
-
-	/**
-	 *
 	 * @param output the filter applied will generate a new Image called output
 	 *               than will create a new file (image)
 	 */
@@ -609,15 +589,15 @@ public class GUIPrototypeController implements Initializable {
         this.limiarizacaoSlider.setDisable(status);
         this.contrasteSlider.setDisable(status);
         this.sobelButton.setDisable(status);
-        //this.rRadio.setDisable(status);
-        //this.gRadio.setDisable(status);
-        //this.bRadio.setDisable(status);
+        this.rRadio.setDisable(status);
+        this.gRadio.setDisable(status);
+        this.bRadio.setDisable(status);
+		this.noneRadio.setDisable(status);
         this.yiqrgbButton.setDisable(status);
         this.rbgyiqButton.setDisable(status);
         this.negativoButton.setDisable(status);
         this.cBrilhoSlider.setDisable(status);
         this.multiplicativoButton.setDisable(status);
-        this.aditivoButton.setDisable(status);
         this.saveFile.setDisable(status);
 	}
 
