@@ -2,17 +2,17 @@ package controllers;
 
 
 
+import DigitalImageProcess.Colors.ConvertToRGB;
+import DigitalImageProcess.Colors.ConvertToYIQ;
 import DigitalImageProcess.DigitalProcess;
 import DigitalImageProcess.Effects.Bands;
 import DigitalImageProcess.Effects.Negative;
 import DigitalImageProcess.Effects.Thresholding;
 import DigitalImageProcess.Luminosity.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -26,19 +26,13 @@ import javafx.event.ActionEvent;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import DigitalImageProcess.Filters.*;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import utils.ViewsManipulate;
 
 
@@ -50,10 +44,7 @@ public class GUIPrototypeController implements Initializable {
 	private Pane mainPanel;
 
 	@FXML
-	private Button mask3x3Button;
-
-	@FXML
-	private Button mask4x4Button;
+	private Slider maskSlider;
 
 	@FXML
 	private Button mediaButton;
@@ -91,6 +82,8 @@ public class GUIPrototypeController implements Initializable {
 	@FXML
 	private ImageView imageView;
 
+	@FXML
+	private Label maskLabel;
 
 	@FXML
 	private Label limiarizacaoLabel;
@@ -98,26 +91,29 @@ public class GUIPrototypeController implements Initializable {
 	@FXML
 	private Label contrasteLabel;
 
-	@FXML
-	private Slider rSlider;
-
-    @FXML
-    private Slider gSlider;
-
-    @FXML
-    private Slider bSlider;
-
     @FXML
 	private Label brilhoLabel;
 
+	@FXML
+	private Label imageNameLabel;
+
+	@FXML
+	private Label imageSizeLabel;
+
+	@FXML
+	private ToggleGroup rgbGroup;
+
     @FXML
-    private Label rLabel;
+    private RadioButton rRadio;
 
 	@FXML
-	private Label gLabel;
+	private RadioButton gRadio;
 
 	@FXML
-	private Label bLabel;
+	private RadioButton bRadio;
+
+	@FXML
+	private RadioButton noneRadio;
 
 
 	private File imageUrl;
@@ -128,8 +124,9 @@ public class GUIPrototypeController implements Initializable {
 	private Average average;
 	private Median median;
 	private SobelGradient sobel;
-	private MaskSetter mask;
-    private Alert alert;
+	private Mask mask;
+    private Alert alertWarning;
+	private Alert alertOk;
 	private BufferedImage output;
 	private static BufferedImage image; //ESTA VARI�VEL DEVERIA SER DO TIPO DIGITALIMAGEPROCESS.TOOLS.IMAGE
 	private String imageName = "/new_lena.png";
@@ -146,11 +143,13 @@ public class GUIPrototypeController implements Initializable {
     private int brightValue;
 	private ViewsManipulate otherView;
 	private ArrayList<Integer> matrix;
+	private ConvertToYIQ yiq;
+	private ConvertToRGB rgb;
+	Convolution convolution;
 
 
 
-
-    public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
+	public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
     }
 
@@ -165,9 +164,10 @@ public class GUIPrototypeController implements Initializable {
 		);
 
 
-		this.alert = new Alert(Alert.AlertType.WARNING);
-		alert.setTitle("Alerta");
-		this.mask = new MaskSetter();
+		this.alertWarning = new Alert(Alert.AlertType.WARNING);
+		this.alertOk = new Alert(Alert.AlertType.CONFIRMATION);
+		alertWarning.setTitle("Alerta");
+		this.mask = new Mask();
 		contrast = new AdaptiveContrast(1.0f);
 		negative = new Negative();
 		additive = new AdditiveBrightnes();
@@ -180,15 +180,15 @@ public class GUIPrototypeController implements Initializable {
 		multiplicative = new MultiplicativeBrightnes();
 		otherView = new ViewsManipulate();
 		matrix = new ArrayList<Integer>();
-	}
+		yiq = new ConvertToYIQ();
+		rgb = new ConvertToRGB();
+		convolution = new Convolution();
 
-
-	/**
-	 * Initializing buttons handle.
-	 */
-	@FXML
-	private void initialize(){
         buttonStatus(true);
+
+		this.maskSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+			this.maskLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+		});
 
         this.limiarizacaoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
             this.limiarizacaoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
@@ -202,16 +202,10 @@ public class GUIPrototypeController implements Initializable {
             this.brilhoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
         });
 
-		this.rSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.rLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-		});
-
-		this.gSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.gLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-		});
-
-		this.bSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.bLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+		this.maskSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+			if(!isNowChanging) {
+				this.mascaraValue = (int) this.maskSlider.getValue();
+			}
 		});
 
         this.limiarizacaoSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
@@ -248,38 +242,37 @@ public class GUIPrototypeController implements Initializable {
             }
         });
 
-		this.rSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
-			if(!isNowChanging) {
-				try {
-					this.output = processController(bands, new Color((int) rSlider.getValue(), 0 ,0));
-					editing(output, this.imageName);
-				} catch (CloneNotSupportedException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		rgbGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
 
-		this.gSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
-			if(!isNowChanging) {
+            if (rgbGroup.getSelectedToggle() != null) {
 				try {
-					this.output = processController(bands, new Color(0, (int) gSlider.getValue(), 0));
-					editing(output, this.imageName);
-				} catch (CloneNotSupportedException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+					if(rRadio.isArmed()){
+						this.output = processController(bands, new Color(255, 0, 0));
+						editing(output, this.imageName);
+					}
 
-		this.bSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
-			if(!isNowChanging) {
-				try {
-					this.output = processController(bands, new Color(0, 0, (int) gSlider.getValue()));
-					editing(output, this.imageName);
+					if(gRadio.isArmed()){
+						this.output = processController(bands, new Color(0, 255, 0));
+						editing(output, this.imageName);
+					}
+
+					if(bRadio.isArmed()){
+						this.output = processController(bands, new Color(0, 0, 255));
+						editing(output, this.imageName);
+					}
+					if(noneRadio.isArmed()){
+						editing(this.image, this.imageName);
+					}
 				} catch (CloneNotSupportedException e) {
 					e.printStackTrace();
 				}
-			}
-		});
+                // Do something here with the userData of newly selected radioButton
+
+            }
+
+        });
+
+
 
     }
 
@@ -289,7 +282,6 @@ public class GUIPrototypeController implements Initializable {
 
 
 	/**
-	 * Need finish it
 	 * @param event
 	 */
 	@FXML
@@ -300,6 +292,8 @@ public class GUIPrototypeController implements Initializable {
                 buttonStatus(false);
 				url = imageUrl.toURI().toURL();
 				image = ImageIO.read(imageUrl);
+				this.imageNameLabel.setText(imageUrl.getName());
+				this.imageSizeLabel.setText(image.getWidth() + " x " + image.getHeight());
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -325,32 +319,10 @@ public class GUIPrototypeController implements Initializable {
 				ImageIO.write(output, "png", new File(temp));
 				imageEdited.delete();
 			}
-
-
-
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	@FXML
-	public void mask3x3Action(ActionEvent event){
-		Mask3x3Controller mask3x3 = (Mask3x3Controller) otherView.loadScreen(getClass(), "/assets/views/Mask3x3.fxml", "Mascara 3x3",
-				233, 221);
-
-		if(mask3x3 != null){
-			mask3x3.setValueReturn(matrix1 -> {
-				this.matrix = matrix1;
-				System.out.println(matrix1.get(0));
-			});
-
-		}
-
-
-	}
-
-
 
 	/**
 	 *	Function will apply the value from mask.
@@ -360,9 +332,9 @@ public class GUIPrototypeController implements Initializable {
 	@FXML
 	public void mediaClicked(ActionEvent event){
         if(this.mascaraValue <= 0){
-            alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
-            alert.setContentText("Valor para a máscara!");
-            alert.showAndWait();
+            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alertWarning.setContentText("Valor para a máscara!");
+            alertWarning.showAndWait();
         }else{
 			try {
 				this.output = processController(average, this.mascaraValue);
@@ -381,12 +353,13 @@ public class GUIPrototypeController implements Initializable {
 	@FXML
 	public void medianaClicked(ActionEvent event){
         if(this.mascaraValue <= 0){
-            alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
-            alert.setContentText("Um valor para a máscara!");
-            alert.showAndWait();
+            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alertWarning.setContentText("Um valor para a máscara!");
+            alertWarning.showAndWait();
         }else{
 			try {
-				this.output = processController(median, this.mascaraValue);
+				this.output = processController(median, 10);
+				editing(output, this.imageName);
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
@@ -400,7 +373,38 @@ public class GUIPrototypeController implements Initializable {
 	 */
 	@FXML
 	public void convolucaoClicked(ActionEvent event){
+		Mask3x3Controller mask3x3 = (Mask3x3Controller) otherView.loadScreen(getClass(), "/assets/views/Mask3x3.fxml", "Mascara 3x3",
+				233, 221);
 
+		if(mask3x3 != null){
+			mask3x3.setValueReturn(matrix1 -> {
+				this.matrix = matrix1;
+				Convolution conv = new Convolution();
+
+				/********* Configure Mask *********/
+
+				 // Create matrix 3x3
+				 mask.createMatrix(3, 3);
+
+				 // Fill matrix
+				 for(int x =0; x < matrix.size(); x+=3)
+					 mask.setMatrixValue(matrix.get(x), matrix.get(x+1), matrix.get(x+2));
+
+				 // Set offset
+				 mask.setOffset(3);
+
+				 // Set sharpen
+				 mask.setSharpen(1, 2);
+
+				try {
+					this.output = processController(convolution, mask);
+					editing(output, imageName);
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+			});
+
+		}
 	}
 
 	/**
@@ -452,8 +456,37 @@ public class GUIPrototypeController implements Initializable {
 	 * @param event of click in rgb -> yiq button
 	 */
 	@FXML
-	public void rgbClicked(ActionEvent event){
-
+	public void yiqClicked(ActionEvent event){
+		FileChooser yiqChooser = new FileChooser();
+		yiqChooser.setTitle("Selecione o arquivo .yiq");
+		yiqChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		yiqChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("TEXT files (*.yiq)", "*.yiq")
+		);
+		String temp = fileChooser.showOpenDialog(mainPanel.getScene().getWindow()).getPath();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(temp));
+			output = processController(rgb, reader);
+			reader.close();
+			editing(output, "imageToRGB");
+			fileChooser = new FileChooser();
+			fileChooser.setTitle("Salvar arquivo RGB");
+			File finalImageUrl = fileChooser.showSaveDialog(mainPanel.getScene().getWindow());
+			temp = finalImageUrl.getParent() + "/" + finalImageUrl.getName() + ".png";
+			ImageIO.write(output, "png", new File(temp));
+			alertOk.setHeaderText("Sucesso!");
+			alertOk.setContentText("Salvo em RGB com sucesso!");
+			alertOk.showAndWait();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			alertWarning.setHeaderText("Algo ocorreu ao converter para YIQ!");
+			alertOk.setContentText(e.getMessage());
+			alertOk.showAndWait();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -461,7 +494,26 @@ public class GUIPrototypeController implements Initializable {
 	 * @param event of click in yiq -> rgb button
 	 */
 	@FXML
-	public void yiqClicked(ActionEvent event){
+	public void rgbClicked(ActionEvent event){
+		fileChooser = new FileChooser();
+		fileChooser.setTitle("Salvar arquivo YIQ");
+		File finalImageUrl = fileChooser.showSaveDialog(mainPanel.getScene().getWindow());
+		String temp = finalImageUrl.getParent() + "/" + finalImageUrl.getName() + ".yiq";
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(temp));
+			processController(yiq, writer);
+			writer.close();
+			alertOk.setHeaderText("Sucesso!");
+			alertOk.setContentText("Convertido para YIQ com sucesso!");
+			alertOk.showAndWait();
+		} catch (IOException e) {
+			alertWarning.setHeaderText("Algo ocorreu ao converter para YIQ!");
+			alertOk.setContentText(e.getMessage());
+			alertOk.showAndWait();
+			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -487,9 +539,9 @@ public class GUIPrototypeController implements Initializable {
 	@FXML
 	public void multiplicativoClicked(ActionEvent event){
         if(this.brightValue <= 0){
-            alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
-            alert.setContentText("Valor para o brilho tem que ser diferente de 0!");
-            alert.showAndWait();
+            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alertWarning.setContentText("Valor para o brilho tem que ser diferente de 0!");
+            alertWarning.showAndWait();
         }else {
             try {
                 this.output = processController(multiplicative, this.brightValue);
@@ -507,9 +559,9 @@ public class GUIPrototypeController implements Initializable {
 	@FXML
 	public void aditivoClicked(ActionEvent event){
         if(this.brightValue <= 0){
-            alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
-            alert.setContentText("Valor para o brilho tem que ser diferente de 0!");
-            alert.showAndWait();
+            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alertWarning.setContentText("Valor para o brilho tem que ser diferente de 0!");
+            alertWarning.showAndWait();
         }else {
             try {
                 this.output = processController(additive, this.brightValue);
@@ -544,7 +596,7 @@ public class GUIPrototypeController implements Initializable {
      */
 	public void buttonStatus(boolean status){
 		//this.mask3x3Button.setDisable(status);
-		this.mask4x4Button.setDisable(status);
+		this.maskSlider.setDisable(status);
         this.mediaButton.setDisable(status);
         this.medianaButton.setDisable(status);
         this.convolucaoButton.setDisable(status);
@@ -553,9 +605,9 @@ public class GUIPrototypeController implements Initializable {
         this.limiarizacaoSlider.setDisable(status);
         this.contrasteSlider.setDisable(status);
         this.sobelButton.setDisable(status);
-        this.rSlider.setDisable(status);
-        this.gSlider.setDisable(status);
-        this.bSlider.setDisable(status);
+        //this.rRadio.setDisable(status);
+        //this.gRadio.setDisable(status);
+        //this.bRadio.setDisable(status);
         this.yiqrgbButton.setDisable(status);
         this.rbgyiqButton.setDisable(status);
         this.negativoButton.setDisable(status);
