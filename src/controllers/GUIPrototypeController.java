@@ -262,6 +262,8 @@ public class GUIPrototypeController implements Initializable {
 						editing(output, this.imageName);
 					}
 					if(noneRadio.isArmed()){
+						System.out.println("TEST");
+
 						editing(this.image, this.imageName);
 					}
 				} catch (CloneNotSupportedException e) {
@@ -579,11 +581,12 @@ public class GUIPrototypeController implements Initializable {
 	 */
 	public void editing(BufferedImage output, String imageName){
 		try {
+			URL url;
 			ImageIO.write(output, "png", new File(this.imageUrl.getParent() + imageName));
 			String temp = imageUrl.getParent() + imageName;
 			imageEdited = new File(temp);
 			url = imageEdited.toURI().toURL();
-			image = ImageIO.read(imageEdited);
+			//image = ImageIO.read(imageEdited);
 			imageView.setImage(new Image(url.toExternalForm()));
 		} catch (IOException e) {
 			e.printStackTrace();
