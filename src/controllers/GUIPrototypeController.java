@@ -344,7 +344,6 @@ public class GUIPrototypeController implements Initializable {
 				e.printStackTrace();
 			}
 		}
-
     }
 
 	/**
@@ -388,8 +387,9 @@ public class GUIPrototypeController implements Initializable {
 				 mask.createMatrix(3, 3);
 
 				 // Fill matrix
-				 for(int x =0; x < matrix.size(); x+=3)
-					 mask.setMatrixValue(matrix.get(x), matrix.get(x+1), matrix.get(x+2));
+				 for(int x = 0; x < 3; x++)
+				 	for(int y = 0; y < 3; y++)
+					 	mask.setMatrixValue(x, y, matrix.get(y));
 
 				 // Set offset
 				 mask.setOffset(3);

@@ -35,7 +35,7 @@ public class Image {
     	try {
 			currentImage = ImageCareTaker.getInstance().getLastImageSaved();
 		} catch (Exception e) {
-			//VER O QUE FAZER COM A MENSAGEM DE ERRO, SE VAI TRATAR ESSA EXCEÇÃO AQUI
+			//VER O QUE FAZER COM A MENSAGEM DE ERRO, SE VAI TRATAR ESSA EXCEï¿½ï¿½O AQUI
 		}
     }
     
