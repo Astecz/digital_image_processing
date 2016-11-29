@@ -220,12 +220,15 @@ public class GUIPrototypeController implements Initializable {
         });
 
         this.contrasteSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
-            if(!isNowChanging) {
-                try {
-                    this.output = processController(contrast, (int) this.contrasteSlider.getValue());
-                    editing(output, this.imageName);
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
+            if(!isNowChanging ) {
+                int contrastValue = (int) this.contrasteSlider.getValue();
+                if(contrastValue != 0) {
+                    try {
+                        this.output = processController(contrast, contrastValue);
+                        editing(output, this.imageName);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -261,8 +264,6 @@ public class GUIPrototypeController implements Initializable {
 						editing(output, this.imageName);
 					}
 					if(noneRadio.isArmed()){
-						System.out.println("TEST");
-
 						editing(this.image, this.imageName);
 					}
 				} catch (CloneNotSupportedException e) {
