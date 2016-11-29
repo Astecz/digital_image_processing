@@ -2,14 +2,21 @@ package controllers;
 
 
 
+import DigitalImageProcess.Colors.ConvertToRGB;
+import DigitalImageProcess.Colors.ConvertToYIQ;
 import DigitalImageProcess.DigitalProcess;
 import DigitalImageProcess.Effects.Bands;
 import DigitalImageProcess.Effects.Negative;
 import DigitalImageProcess.Effects.Thresholding;
 import DigitalImageProcess.Luminosity.*;
-
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -17,23 +24,28 @@ import javafx.stage.FileChooser;
 import javafx.event.ActionEvent;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
 import DigitalImageProcess.Filters.*;
+import utils.ViewsManipulate;
 
 
 /**
  * @author Claudio Djohnnatha
  */
-public class GUIPrototypeController {
+public class GUIPrototypeController implements Initializable {
 	@FXML
 	private Pane mainPanel;
 
 	@FXML
-	private Slider mascaraSlider;
+	private Slider maskSlider;
+
 	@FXML
 	private Button mediaButton;
 	@FXML
@@ -50,12 +62,6 @@ public class GUIPrototypeController {
 	private Slider contrasteSlider;
 	@FXML
 	private Button sobelButton;
-	@FXML
-	private Slider rSlider;
-    @FXML
-    private Slider gSlider;
-    @FXML
-    private Slider bSlider;
 	@FXML
 	private Button rbgyiqButton;
 	@FXML
@@ -77,7 +83,7 @@ public class GUIPrototypeController {
 	private ImageView imageView;
 
 	@FXML
-	private Label mascaraLabel;
+	private Label maskLabel;
 
 	@FXML
 	private Label limiarizacaoLabel;
@@ -85,17 +91,29 @@ public class GUIPrototypeController {
 	@FXML
 	private Label contrasteLabel;
 
-	@FXML
-	private Label rLabel;
-
-    @FXML
-    private Label gLabel;
-
-    @FXML
-    private Label bLabel;
-
     @FXML
 	private Label brilhoLabel;
+
+	@FXML
+	private Label imageNameLabel;
+
+	@FXML
+	private Label imageSizeLabel;
+
+	@FXML
+	private ToggleGroup rgbGroup;
+
+    @FXML
+    private RadioButton rRadio;
+
+	@FXML
+	private RadioButton gRadio;
+
+	@FXML
+	private RadioButton bRadio;
+
+	@FXML
+	private RadioButton noneRadio;
 
 
 	private File imageUrl;
@@ -106,136 +124,165 @@ public class GUIPrototypeController {
 	private Average average;
 	private Median median;
 	private SobelGradient sobel;
-	private MaskSetter mask;
-    private Alert alert;
+	private Mask mask;
+    private Alert alertWarning;
+	private Alert alertOk;
 	private BufferedImage output;
-	private static BufferedImage image; //ESTA VARI�VEL DEVERIA SER DO TIPO DIGITALIMAGEPROCESS.TOOLS.IMAGE
+	private static BufferedImage image; //ESTA VARI�VEL DEVERIA SER DO TIPO DIGITALIMAGEPROCESS.TOOLS.IMAGE
 	private String imageName = "/new_lena.png";
 	private int mascaraValue = 0;
     private AdaptiveContrast contrast;
     private Negative negative;
-    private AdditiveBrightness additive;
+    private AdditiveBrightnes additive;
+    private MultiplicativeBrightnes multiplicative;
     private HistogramExpansion hist_exp;
     private HistogramEqualization hist_eq;
     private Thresholding thresholding;
     private Bands bands;
+	private Color imageRGB;
+    private int brightValue;
+	private ViewsManipulate otherView;
+	private ArrayList<Integer> matrix;
+	private ConvertToYIQ yiq;
+	private ConvertToRGB rgb;
+	private Convolution convolution;
 
 
-    public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
+
+	public static BufferedImage processController(DigitalProcess process, Object arg) throws CloneNotSupportedException {
         return process.apply(image, arg);
     }
 
-	public GUIPrototypeController(){
+
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
 		this.fileChooser = new FileChooser();
 		fileChooser.setTitle("Selecione a imagem");
-		fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))
-		);
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 		fileChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
 		);
 
-        this.alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Alerta");
 
-        contrast = new AdaptiveContrast(1.0f);
-        negative = new Negative();
-        additive = new AdditiveBrightness();
-        sobel = new SobelGradient();
-        hist_exp = new HistogramExpansion();
-        hist_eq = new HistogramEqualization();
-        average = new Average();
-        thresholding = new Thresholding();
-        bands = new Bands();
+		this.alertWarning = new Alert(Alert.AlertType.WARNING);
+		this.alertOk = new Alert(Alert.AlertType.CONFIRMATION);
+		alertWarning.setTitle("Alerta");
+		this.mask = new Mask();
+		contrast = new AdaptiveContrast(1.0f);
+		negative = new Negative();
+		additive = new AdditiveBrightnes();
+		sobel = new SobelGradient();
+		hist_exp = new HistogramExpansion();
+		hist_eq = new HistogramEqualization();
+		average = new Average();
+		thresholding = new Thresholding();
+		bands = new Bands();
+		multiplicative = new MultiplicativeBrightnes();
+		otherView = new ViewsManipulate();
+		matrix = new ArrayList<Integer>();
+		yiq = new ConvertToYIQ();
+		rgb = new ConvertToRGB();
+		convolution = new Convolution();
+		median = new Median();
 
-	}
-
-	/**
-	 * Initializing buttons handle.
-	 */
-	@FXML
-	private void initialize(){
         buttonStatus(true);
-		this.mascaraSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			try {
-                mask = new MaskSetter();
-				this.mascaraValue = Math.round(newValue.floatValue());
-				this.output = processController(mask, this.mascaraValue);
-				this.mascaraLabel.setText(String.valueOf(this.mascaraValue));
-				editing(output, this.imageName);
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
+
+		this.maskSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+			this.maskLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+		});
+
+        this.limiarizacaoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+            this.limiarizacaoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+        });
+
+        this.contrasteSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+            this.contrasteLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+        });
+
+        this.cBrilhoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
+            this.brilhoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
+        });
+
+		this.maskSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+			if(!isNowChanging) {
+				this.mascaraValue = (int) this.maskSlider.getValue();
 			}
 		});
 
-		this.limiarizacaoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-				this.limiarizacaoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(thresholding, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
+        this.limiarizacaoSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+                if(!isNowChanging) {
+                    try {
+                        this.output = processController(thresholding, (int) this.limiarizacaoSlider.getValue());
+                        editing(output, this.imageName);
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+        });
+
+        this.contrasteSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+            if(!isNowChanging) {
+                try {
+                    this.output = processController(contrast, (int) this.contrasteSlider.getValue());
+                    editing(output, this.imageName);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
-		this.contrasteSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.contrasteLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(contrast, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
+        this.cBrilhoSlider.valueChangingProperty().addListener((observableValue, wasChanging, isNowChanging) ->{
+            if(!isNowChanging) {
+                try {
+                    this.brightValue = (int) this.cBrilhoSlider.getValue();
+                    this.output = processController(additive, brightValue);
+                    editing(output, this.imageName);
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+		rgbGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
+
+            if (rgbGroup.getSelectedToggle() != null) {
+				try {
+					if(rRadio.isArmed()){
+						this.output = processController(bands, new Color(255, 0, 0));
+						editing(output, this.imageName);
+					}
+
+					if(gRadio.isArmed()){
+						this.output = processController(bands, new Color(0, 255, 0));
+						editing(output, this.imageName);
+					}
+
+					if(bRadio.isArmed()){
+						this.output = processController(bands, new Color(0, 0, 255));
+						editing(output, this.imageName);
+					}
+					if(noneRadio.isArmed()){
+						editing(this.image, this.imageName);
+					}
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+                // Do something here with the userData of newly selected radioButton
+
             }
 
         });
 
-		this.rSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.rLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(bands, newValue.floatValue());
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-        });
 
-        this.gSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-            this.gLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(bands, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-        });
 
-        this.bSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-            this.bLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(bands, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-        });
-
-		this.cBrilhoSlider.valueProperty().addListener((observable, oldValue, newValue)->{
-			this.brilhoLabel.setText(String.valueOf(Math.round(newValue.floatValue())));
-            try {
-                this.output = processController(additive, Math.round(newValue.floatValue()));
-                editing(output, this.imageName);
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
-        });
+    }
 
 
 
 
 
-	}
 
 	/**
-	 * Need finish it
 	 * @param event
 	 */
 	@FXML
@@ -246,6 +293,8 @@ public class GUIPrototypeController {
                 buttonStatus(false);
 				url = imageUrl.toURI().toURL();
 				image = ImageIO.read(imageUrl);
+				this.imageNameLabel.setText(imageUrl.getName());
+				this.imageSizeLabel.setText(image.getWidth() + " x " + image.getHeight());
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -260,18 +309,19 @@ public class GUIPrototypeController {
 	public void saveFileHandle(ActionEvent event){
 		fileChooser = new FileChooser();
 		fileChooser.setTitle("Salvar imagem");
-		imageUrl = fileChooser.showOpenDialog(mainPanel.getScene().getWindow());
-		if(output != null){
-			try {
-				url = imageUrl.toURI().toURL();
-				image = ImageIO.read(imageUrl);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+		File finalImageUrl = fileChooser.showSaveDialog(mainPanel.getScene().getWindow());
+		System.out.println("IMAGE: " + imageUrl);
+		String temp = finalImageUrl.getParent() + "/" + finalImageUrl.getName() + ".png";
+
+		try {
+			if(output == null){
+				ImageIO.write(image, "png", new File(temp));
+			}else{
+				ImageIO.write(output, "png", new File(temp));
+				imageEdited.delete();
 			}
-			imageView.setImage(new Image(url.toExternalForm()));
-			System.out.println(imageUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -283,16 +333,18 @@ public class GUIPrototypeController {
 	@FXML
 	public void mediaClicked(ActionEvent event){
         if(this.mascaraValue <= 0){
-            alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
-            alert.setContentText("Valor para a máscara!");
-            alert.showAndWait();
-        }
-        try {
-            this.output = processController(average, this.mascaraValue);
-            editing(output, this.imageName);
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
+            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alertWarning.setContentText("Valor para a máscara!");
+            alertWarning.showAndWait();
+        }else{
+			try {
+				this.output = processController(average, this.mascaraValue);
+				editing(output, this.imageName);
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
+		}
+
     }
 
 	/**
@@ -302,15 +354,18 @@ public class GUIPrototypeController {
 	@FXML
 	public void medianaClicked(ActionEvent event){
         if(this.mascaraValue <= 0){
-            alert.setHeaderText("Avisos! Ops, você esqueceu algo!");
-            alert.setContentText("Um valor para a máscara!");
-            alert.showAndWait();
-        }
-		try {
-			this.output = processController(median, this.mascaraValue);
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
+            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alertWarning.setContentText("Um valor para a máscara!");
+            alertWarning.showAndWait();
+        }else{
+			try {
+				this.output = processController(median, 10);
+				editing(output, this.imageName);
+			} catch (CloneNotSupportedException e) {
+				e.printStackTrace();
+			}
 		}
+
 	}
 
 	/**
@@ -319,7 +374,38 @@ public class GUIPrototypeController {
 	 */
 	@FXML
 	public void convolucaoClicked(ActionEvent event){
+		Mask3x3Controller mask3x3 = (Mask3x3Controller) otherView.loadScreen(getClass(), "/assets/views/Mask3x3.fxml", "Mascara 3x3",
+				233, 221);
 
+		if(mask3x3 != null){
+			mask3x3.setValueReturn(matrix1 -> {
+				this.matrix = matrix1;
+				Convolution conv = new Convolution();
+
+				/********* Configure Mask *********/
+
+				 // Create matrix 3x3
+				 mask.createMatrix(3, 3);
+
+				 // Fill matrix
+				 for(int x =0; x < matrix.size(); x+=3)
+					 mask.setMatrixValue(matrix.get(x), matrix.get(x+1), matrix.get(x+2));
+
+				 // Set offset
+				 mask.setOffset(3);
+
+				 // Set sharpen
+				 mask.setSharpen(1, 2);
+				/** ------------------ **/
+				try {
+					this.output = processController(convolution, mask);
+					editing(output, imageName);
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+			});
+
+		}
 	}
 
 	/**
@@ -371,8 +457,37 @@ public class GUIPrototypeController {
 	 * @param event of click in rgb -> yiq button
 	 */
 	@FXML
-	public void rgbClicked(ActionEvent event){
-
+	public void yiqClicked(ActionEvent event){
+		FileChooser yiqChooser = new FileChooser();
+		yiqChooser.setTitle("Selecione o arquivo .yiq");
+		yiqChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		yiqChooser.getExtensionFilters().addAll(
+				new FileChooser.ExtensionFilter("TEXT files (*.yiq)", "*.yiq")
+		);
+		String temp = fileChooser.showOpenDialog(mainPanel.getScene().getWindow()).getPath();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(temp));
+			output = processController(rgb, reader);
+			reader.close();
+			editing(output, "imageToRGB");
+			fileChooser = new FileChooser();
+			fileChooser.setTitle("Salvar arquivo RGB");
+			File finalImageUrl = fileChooser.showSaveDialog(mainPanel.getScene().getWindow());
+			temp = finalImageUrl.getParent() + "/" + finalImageUrl.getName() + ".png";
+			ImageIO.write(output, "png", new File(temp));
+			alertOk.setHeaderText("Sucesso!");
+			alertOk.setContentText("Salvo em RGB com sucesso!");
+			alertOk.showAndWait();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			alertWarning.setHeaderText("Algo ocorreu ao converter para YIQ!");
+			alertOk.setContentText(e.getMessage());
+			alertOk.showAndWait();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -380,7 +495,26 @@ public class GUIPrototypeController {
 	 * @param event of click in yiq -> rgb button
 	 */
 	@FXML
-	public void yiqClicked(ActionEvent event){
+	public void rgbClicked(ActionEvent event){
+		fileChooser = new FileChooser();
+		fileChooser.setTitle("Salvar arquivo YIQ");
+		File finalImageUrl = fileChooser.showSaveDialog(mainPanel.getScene().getWindow());
+		String temp = finalImageUrl.getParent() + "/" + finalImageUrl.getName() + ".yiq";
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(temp));
+			processController(yiq, writer);
+			writer.close();
+			alertOk.setHeaderText("Sucesso!");
+			alertOk.setContentText("Convertido para YIQ com sucesso!");
+			alertOk.showAndWait();
+		} catch (IOException e) {
+			alertWarning.setHeaderText("Algo ocorreu ao converter para YIQ!");
+			alertOk.setContentText(e.getMessage());
+			alertOk.showAndWait();
+			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -405,6 +539,17 @@ public class GUIPrototypeController {
 	 */
 	@FXML
 	public void multiplicativoClicked(ActionEvent event){
+        if(this.brightValue <= 0){
+            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alertWarning.setContentText("Valor para o brilho tem que ser diferente de 0!");
+            alertWarning.showAndWait();
+        }else {
+            try {
+                this.output = processController(multiplicative, this.brightValue);
+                editing(output, this.imageName);
+            } catch (CloneNotSupportedException e) {
+            }
+        }
 
 	}
 
@@ -414,7 +559,17 @@ public class GUIPrototypeController {
 	 */
 	@FXML
 	public void aditivoClicked(ActionEvent event){
-
+        if(this.brightValue <= 0){
+            alertWarning.setHeaderText("Avisos! Ops, você esqueceu algo!");
+            alertWarning.setContentText("Valor para o brilho tem que ser diferente de 0!");
+            alertWarning.showAndWait();
+        }else {
+            try {
+                this.output = processController(additive, this.brightValue);
+                editing(output, this.imageName);
+            } catch (CloneNotSupportedException e) {
+            }
+        }
 	}
 
 	/**
@@ -441,7 +596,8 @@ public class GUIPrototypeController {
      * @param status it's a boolean wich is true to disable and false to enable.
      */
 	public void buttonStatus(boolean status){
-		this.mascaraSlider.setDisable(status);
+		//this.mask3x3Button.setDisable(status);
+		this.maskSlider.setDisable(status);
         this.mediaButton.setDisable(status);
         this.medianaButton.setDisable(status);
         this.convolucaoButton.setDisable(status);
@@ -450,9 +606,9 @@ public class GUIPrototypeController {
         this.limiarizacaoSlider.setDisable(status);
         this.contrasteSlider.setDisable(status);
         this.sobelButton.setDisable(status);
-        this.rSlider.setDisable(status);
-        this.gSlider.setDisable(status);
-        this.bSlider.setDisable(status);
+        //this.rRadio.setDisable(status);
+        //this.gRadio.setDisable(status);
+        //this.bRadio.setDisable(status);
         this.yiqrgbButton.setDisable(status);
         this.rbgyiqButton.setDisable(status);
         this.negativoButton.setDisable(status);
@@ -461,6 +617,7 @@ public class GUIPrototypeController {
         this.aditivoButton.setDisable(status);
         this.saveFile.setDisable(status);
 	}
+
 
 
 }

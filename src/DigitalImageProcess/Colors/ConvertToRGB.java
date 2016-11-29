@@ -5,11 +5,10 @@
  */
 package DigitalImageProcess.Colors;
 
-
-import DigitalImageProcess.DigitalProcess;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  *
@@ -17,38 +16,62 @@ import java.awt.image.BufferedImage;
  */
 
 public class ConvertToRGB extends DigitalImageProcess.DigitalProcess {
-	@Override
-	protected int transform(BufferedImage img, int px, int py, Object arg) {
+    @Override
+    public BufferedImage apply(BufferedImage img, Object arg) {
+        BufferedReader buffer = (BufferedReader) arg;
 
-		Color	 color = new Color(img.getRGB(px, py));
+        try {
+            String[] dims = buffer.readLine().split(" ");
+            
+            int width = Integer.parseInt(dims[0]);
+            int height = Integer.parseInt(dims[1]);
+            
+            BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            
+            String line;
+            
+            for(int px = 0; px < width; px++)
+                for(int py = 0; py < height; py++) {
+                    line = buffer.readLine();
+                    
+                    if(line == null) {
+                        px = width;
+                        break;
+                    }
 
-		/*
-		 * L� do arquivo os valores de YIQ, salvo na convers�o RGB->YIQ Mas por
-		 * enquanto vou deixar pegando os valores da imagem de entrada
-		 */
+                    output.setRGB(px, py, this.transform(img, px, py, line.split(" ")));
+                }
+            
+            return output;
+        } catch (IOException ex) {
+            // Exceptions Handler
+            return null;
+        }
+    }
+    
+    @Override
+    protected int transform(BufferedImage img, int px, int py, Object arg) {
+        String[] bands = (String[]) arg;
 
-		float Y = color.getRed();
-		float I = color.getGreen();
-		float Q = color.getBlue();
+        if(bands.length != 3)
+            return 0;
 
-		double R = Y + (0.953 * I) + (0.621 * Q);
-		double G = Y - (0.272 * I) - (0.647 * Q);
-		double B = Y - (1.106 * I) + (1.703 * Q);
+        float y = Float.parseFloat(bands[0]);
+        float i = Float.parseFloat(bands[1]);
+        float q = Float.parseFloat(bands[2]);
 
-		R = R > 255 ? 255 : R;
-		G = G > 255 ? 255 : G;
-		B = B > 255 ? 255 : B;
+        float rf = (y + (0.953f * i) + (0.621f * q));
+        float gf = (y - (0.272f * i) - (0.647f * q));
+        float bf = (y - (1.106f * i) + (1.703f * q));
+        
+        int r = (int)(rf * 256);
+        int g = (int)(gf * 256);
+        int b = (int)(bf * 256);
 
-		R = R < 0 ? 0 : R;
-		G = G < 0 ? 0 : G;
-		B = B < 0 ? 0 : B;
+        r = r > 255 ? 255 : r < 0 ? 0 : r;
+        g = g > 255 ? 255 : g < 0 ? 0 : g;
+        b = b > 255 ? 255 : b < 0 ? 0 : b;
 
-		R = Math.round(R);
-		G = Math.round(G);
-		B = Math.round(B);
-
-		return new Color((int) (R), (int) G, (int) B).getRGB();
-
-	}
-
+        return new Color(r, g, b).getRGB();
+    }
 }
